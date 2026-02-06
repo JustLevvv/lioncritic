@@ -1,12 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="styles/circles.css">
     <title>Lioncritic</title>
 </head>
 <body>
-    <h1>Надпись:</h1>
-    <p id="text">Пока ничего</p>
-    <button onclick="showText()">Показать текст</button>
+    <div class="background">
+        <ul class="circles">
+            <li></li><li></li><li></li><li></li><li></li>
+            <li></li><li></li><li></li><li></li><li></li>
+            <li></li><li></li><li></li><li></li><li></li>
+            <li></li><li></li><li></li><li></li><li></li>
+        </ul>
+    </div>
+    <main class="main">
+        <button onclick="showText()">Показать текст</button>
+    </main>
+    <header class="hat">
+        <h1 class="title">Lioncritic</h1>
+        <div class="profile">
+            <p id="text">Пока ничего</p>
+            
+        </div>
+    </header>
+    
+
 
     <script src="scripts/client.js"></script>
 </body>

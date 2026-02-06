@@ -14,20 +14,19 @@ initDB().then((database) => {
   console.log("База данных инициализирована");
 });
 
-let userID = 1;
-
 // тест
-app.get("/api/text", async (req, res) => {
+app.get("/api/text/:id", async (req, res) => {
   try {
+    const id = req.params.id;
     const username = await db.all(
       `
       SELECT 
         u.username,
-        u.rates
+        u.rates_quantity
       FROM users u
       WHERE u.id = ?
     `,
-      [userID],
+      [id],
     );
     res.json(username);
   } catch (error) {

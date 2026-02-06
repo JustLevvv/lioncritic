@@ -1,0 +1,37 @@
+.hat {
+  display: flex;
+  align-items: center;
+  background-color: #222;
+  color: white;
+  padding: 5px 10px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  height: 80px;
+}
+
+.profile {
+  position: absolute;
+  align-items: center;
+  right: 20px;
+  padding: 10px 5px;
+}
+
+.title {
+  color: #aaa;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #444 0%, #333 100%);
+}
+
+main {
+  padding-top: 90px;
+  position: absolute;
+  z-index: 10;
+}
