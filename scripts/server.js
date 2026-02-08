@@ -34,6 +34,25 @@ app.get("/api/text/:id", async (req, res) => {
   }
 });
 
+// Получение информации об игре
+app.get("/api/game/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const game = await db.all(
+      `
+      SELECT
+        *
+      FROM games
+      WHERE games.id = ?
+      `,
+      [id],
+    );
+    res.json(game);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Запуск сервера
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}`);

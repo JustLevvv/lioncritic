@@ -11,18 +11,27 @@
 }
 
 .profile {
+  background-color: #222;
   position: absolute;
   align-items: center;
   right: 20px;
-  padding: 10px 5px;
+  height: 90px;
+  padding: 0;
+}
+
+.profile:hover {
+  background-color: #333;
+  cursor: pointer;
 }
 
 .title {
   color: #aaa;
+  user-select: none;
 }
 
 html, body {
   height: 100%;
+  font-family: Roboto;
 }
 
 body {
@@ -34,4 +43,78 @@ main {
   padding-top: 90px;
   position: absolute;
   z-index: 10;
+}
+
+.games_grid {
+  margin-left: 200px;
+  width: 60%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.panel {
+  background-color: #555;
+  border-radius: 10px;
+  margin: 20px;
+  height: 480px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.game_image {
+  position: static;
+  border-radius: 8px;
+  width: 280px;
+  height: 400px;
+  margin: 10px;
+  overflow: hidden;
+}
+
+.game_name {
+  position: static;
+  color: #ddd;
+  font-size: 20px;
+  margin: 10px; 
+  margin-top: 0;
+  font-weight: bold;
+}
+
+.game_info {
+  display: flex;
+  align-items: center;
+}
+
+
+.year {
+  position: static;
+  color: #aaa;
+  font-size: 14px;
+  margin: 10px; 
+  margin-top: 0;
+  margin-left: auto;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.rating {
+  display: flex;
+  flex-direction: column;
+  position: static;
+  margin: 10px;
+  margin-left: 0;
+  margin-top: 0px;
+}
+
+.rating_score {
+  font-size: 40px;
+  font-weight: bold;
+  color: #cfc;
+}
+
+.rating_quantity {
+  font-size: 10px;
+  font-weight: bold;
+  color: #696;
+  align-self: center;
 }
