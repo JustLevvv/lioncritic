@@ -42,7 +42,13 @@ async function showGame() {
   `;
   element.insertAdjacentHTML("beforeend", panel);
   console.log(gameName);
-  gameID++;
+  //gameID++;
+}
+
+async function hideGame() {
+  const element = document.querySelector(`.panel[id="${gameID - 1}"]`);
+  if (element) element.remove();
+  gameID--;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

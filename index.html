@@ -4,6 +4,7 @@
   <link rel="stylesheet" href="styles/index.css">
   <link rel="stylesheet" href="styles/circles.css">
   <title>Lioncritic</title>
+  <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
 </head>
 <body>
   <div class="background">
@@ -15,13 +16,17 @@
     </ul>
   </div>
   <main class="main">
-    <button onclick="showGame()">Показать текст</button>
+    <button onclick="showGame()">Добавить игру</button>
+    <button onclick="hideGame()">Убавить игру</button>
     <div class="games_grid" id="games_grid">
       
     </div>
   </main>
   <header class="hat">
-    <h1 class="title">Lioncritic</h1>
+    <div class="icon">
+      <img class="icon_image" src="favicon/android-chrome-192x192.png" width="64" height="64">
+      <h1 class="title">ioncritic</h1>
+    </div>
     <div class="profile" onclick="showText()">
       <p id="profile_text">Пока ничего</p>
       

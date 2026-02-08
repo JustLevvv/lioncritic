@@ -25,8 +25,16 @@
 }
 
 .title {
-  color: #aaa;
+  position: relative;
+  color: #272727;
   user-select: none;
+  font-size: 56px;
+  font-style: italic;
+  margin: 0px;
+  margin-right: 20px;
+  margin-left: 0;
+  margin-top: 12px;
+  right: 4px;
 }
 
 html, body {
@@ -37,6 +45,7 @@ html, body {
 body {
   margin: 0;
   background: linear-gradient(180deg, #444 0%, #333 100%);
+  overflow: hidden;
 }
 
 main {
@@ -46,21 +55,33 @@ main {
 }
 
 .games_grid {
-  margin-left: 200px;
-  width: 60%;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  border-radius: 40px;
+  margin-left: 28vh;
+  margin-right: 28vh;
+  height: 80vh;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  grid-template-columns: repeat(4, 1fr); 
 }
 
 .panel {
+  user-select: none;
   background-color: #555;
   border-radius: 10px;
-  margin: 20px;
+  /* margin: 20px; */
   height: 480px;
   width: 300px;
   display: flex;
   flex-direction: column;
 }
+
+.panel:hover{
+  background-color: #666;
+  cursor: pointer;
+}
+
 
 .game_image {
   position: static;
@@ -72,6 +93,7 @@ main {
 }
 
 .game_name {
+  cursor: inherit;
   position: static;
   color: #ddd;
   font-size: 20px;
@@ -87,6 +109,7 @@ main {
 
 
 .year {
+  cursor: inherit;
   position: static;
   color: #aaa;
   font-size: 14px;
@@ -107,14 +130,31 @@ main {
 }
 
 .rating_score {
+  cursor: inherit;
   font-size: 40px;
   font-weight: bold;
   color: #cfc;
 }
 
 .rating_quantity {
+  cursor: inherit;
   font-size: 10px;
   font-weight: bold;
   color: #696;
   align-self: center;
+}
+
+.icon {
+  display: flex;
+  background: linear-gradient(180deg, #ddd 0%, #aaa 100%);
+  margin: 10px;
+  align-items: center;
+  border-radius: 18px;
+}
+
+.icon_image {
+  margin: 4px;
+  margin-left: 10px;
+  margin-bottom: 6px;
+  margin-right: 0;
 }
