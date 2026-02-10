@@ -1,11 +1,14 @@
 "use strict";
 import express from "express";
 import { openDB, initDB } from "./db.js";
+import cookieParser from "cookie-parser";
+import { requireAuth, requireGuest, login, logout, register } from "./auth.js";
 
 // Инициализация сервера
 const app = express();
 app.use(express.json());
 app.use(express.static("."));
+app.use(cookieParser());
 const port = 3000;
 const genres = [
   "Action",
@@ -26,21 +29,55 @@ initDB().then((database) => {
   console.log("База данных инициализирована");
 });
 
-// тест
-app.get("/api/text/:id", async (req, res) => {
+// Регистрация нового пользователя
+app.post("/api/register", requireGuest, async (req, res) => {
   try {
-    const id = req.params.id;
-    const username = await db.all(
-      `
-      SELECT 
-        u.username,
-        u.rates_quantity
-      FROM users u
-      WHERE u.id = ?
-    `,
-      [id],
+    console.log("server");
+    const result = await register(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Логин пользователя
+app.post("/api/login", requireGuest, async (req, res) => {
+  try {
+    const result = await login(req.body);
+    res.cookie("session_id", result.sessionID, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+    });
+    res.json({ message: "Успешная авторизация" });
+  } catch {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Выход из аккаунта
+app.post("/api/logout", requireAuth, async (req, res) => {
+  try {
+    await logout(req.cookies.session_id);
+    res.clearCookie("session_id");
+    res.json({ message: "Успешный выход" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Получение информации о пользователе
+app.get("/api/currentuser", requireAuth, async (req, res) => {
+  try {
+    const user = await db.get(
+      `SELECT 
+        id, username, email, creation_date 
+        FROM users 
+        WHERE id = ?`,
+      [req.user.id],
     );
-    res.json(username);
+    res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

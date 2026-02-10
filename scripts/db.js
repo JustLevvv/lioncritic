@@ -1,22 +1,23 @@
 "use strict";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import bcrypt from "bcryptjs";
 
-// Открытие датабазы
 export async function openDB(database) {
   return open({ filename: database, driver: sqlite3.Database });
 }
 
+let db;
 // Создание таблиц и ввод тестовых данных
 export async function initDB() {
-  const db = await openDB("./lioncritic.db");
+  db = await openDB("./lioncritic.db");
 
   // Таблица пользователей
   await db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL UNIQUE,
-      password TEXT NOT NULL,
+      password_hash TEXT NOT NULL,
       rates_quantity INTEGER NOT NULL DEFAULT 0,
       is_moderator INTEGER NOT NULL DEFAULT 0 CHECK (is_moderator IN (0, 1)),
       email TEXT UNIQUE,
@@ -49,13 +50,24 @@ export async function initDB() {
     )  
   `);
 
-  // Тестовые пользователи
+  // Сессии пользователей
   await db.exec(`
-    INSERT OR IGNORE INTO users (id, username, password, rates_quantity, is_moderator)
+    CREATE TABLE IF NOT EXISTS sessions (
+      session_id TEXT PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      expiration_date DATETIME NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Тестовые пользователи
+  const passwordHash = await bcrypt.hash("1234", 9);
+  await db.exec(`
+    INSERT OR IGNORE INTO users (id, username, password_hash, rates_quantity, is_moderator)
     VALUES
-    (1, 'Croc1954', '1234', 5, 1),
-    (2, 'Dimooon333', '1234', 1, 0),
-    (3, 'Flying_Squid', '1234', 100, 0),
+    (1, 'Croc1954', "${passwordHash}", 5, 1),
+    (2, 'Dimooon333', "${passwordHash}", 1, 0),
+    (3, 'Flying_Squid', "${passwordHash}", 100, 0),
     (4, 'HUMAN', 'HUMAN', 0, 0)
   `);
 
@@ -63,10 +75,14 @@ export async function initDB() {
   await db.exec(`
     INSERT OR IGNORE INTO games (id, title, description, genre, release_date, developer)
     VALUES
-    (1, 'Factorio', 'Factorio is a game about building and creating automated factories to produce items of increasing complexity, within an infinite 2D world. Use your imagination to design your factory, combine simple elements into ingenious structures, and finally protect it from the creatures who don''t really like you.', 'Strategy', '2020-08-14', 'Wube Software LTD.'),
-    (2, 'The Elder Scrolls V: Skyrim', NULL, 'RPG', '2011-11-11', 'Bethesda Game Studios'),
-    (3, 'Euro Truck Simulator 2', 'Travel across Europe as king of the road, a trucker who delivers important cargo across impressive distances! With dozens of cities to explore, your endurance, skill and speed will all be pushed to their limits.', 'Simulation', '2012-10-18', 'SCS Software')
+    (1, 'Factorio', 'Factorio is a game about building and creating automated factories to produce items of increasing complexity, within an infinite 2D world. Use your imagination to design your factory, combine simple elements into ingenious structures, and finally protect it from the creatures who don''t really like you.', 'strategy', '2020-08-14', 'Wube Software LTD.'),
+    (2, 'The Elder Scrolls V: Skyrim', NULL, 'rpg', '2011-11-11', 'Bethesda Game Studios'),
+    (3, 'Euro Truck Simulator 2', 'Travel across Europe as king of the road, a trucker who delivers important cargo across impressive distances! With dozens of cities to explore, your endurance, skill and speed will all be pushed to their limits.', 'simulation', '2012-10-18', 'SCS Software')
   `);
+
+  await db.run("DELETE FROM sessions WHERE expiration_date <= datetime('now')");
 
   return db;
 }
+
+export { db };

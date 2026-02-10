@@ -19,20 +19,22 @@
   </div>
   <header class="hat">
     <div class="icon">
-      <img class="icon_image" src="favicon/android-chrome-192x192.png" width="64" height="64">
-      <h1 class="title">ioncritic</h1>
+      <a href="/index.html" class="home_link">
+        <img class="icon_image" src="favicon/android-chrome-192x192.png" width="64" height="64">
+        <h1 class="title">ioncritic</h1>
+      </a>
     </div>
     <input type="text" id="search_bar" class="search_bar" placeholder="Поиск" spellcheck="false">
     <button onclick="search()"> ПОИСК </button>
     <button onclick="filterGames({})"> СБРОС </button>
-    <div class="profile" onclick="showText()">
+    <div class="profile" onclick="login()">
       <p id="profile_text">Пока ничего</p>
       
     </div>
   </header>
   <main class="main">
-    <button onclick="showGame()">Добавить игру</button>
-    <button onclick="hideGame()">Убавить игру</button>
+    <button onclick="logout()">Выйти из акка</button>
+    <button onclick="register()">register</button>
     <div class="games_grid" id="games_grid">
       
     </div>

@@ -1,19 +1,67 @@
 "use strict";
 
-const userID = 1;
-
-// test changes text to profile data
-async function showText() {
-  const response = await fetch(`/api/text/${userID}`);
+// Логин
+async function login() {
+  const response = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: "Croc1954",
+      password: "1234",
+    }),
+  });
   const data = await response.json();
-  const element = document.getElementById("profile_text");
-  console.log(data);
-  const username = data[0].username;
-  const rates = data[0].rates_quantity;
-  element.textContent = "Пользователь: " + username + " Оценок: " + rates;
+  if (response.ok) {
+    alert("Вход!");
+    userInfo();
+  } else {
+    alert("Ошибка: " + data.error);
+  }
 }
 
-// Adds game to the grid
+// Выход из аккаунта
+async function logout() {
+  const response = await fetch("/api/logout", {
+    method: "POST",
+  });
+  if (response.ok) {
+    location.reload();
+  }
+}
+
+// Получить информацию о пользователе
+async function userInfo() {
+  const response = await fetch("/api/currentuser");
+  if (response.ok) {
+    const user = await response.json();
+    const element = document.getElementById("profile_text");
+    element.textContent = user.username;
+  }
+}
+
+// Регистрация
+async function register() {
+  console.log("client");
+  const response = await fetch("/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: "Obama2.0",
+      email: "president@usa.gov",
+      password: "obamamama",
+      confirmPassword: "obamamama",
+    }),
+  });
+
+  const data = await response.json();
+  if (response.ok) {
+    alert("Регистрация успешна! Теперь войдите.");
+  } else {
+    alert("Ошибка: " + data.error);
+  }
+}
+
+// Добавка панели с игрой в сетку
 async function showGame(gameID) {
   const response = await fetch(`/api/game/${gameID}`);
   const data = await response.json();
@@ -42,9 +90,9 @@ async function showGame(gameID) {
   </a>
   `;
   element.insertAdjacentHTML("beforeend", panel);
-  console.log(gameName);
 }
 
+// Фильтр поиска
 async function filterGames({
   title = "",
   date = "",
@@ -72,7 +120,6 @@ async function filterGames({
   });
 
   panels.innerHTML = "";
-  console.log(panels);
   const data = await response.json();
   if (data.length === 0) return;
   for (const item of data) {
@@ -80,6 +127,7 @@ async function filterGames({
   }
 }
 
+// Поиск
 async function search() {
   const searchBar = document.getElementById("search_bar");
   let text = searchBar.value.trim();
@@ -127,6 +175,7 @@ async function search() {
   }
 }
 
+// Выполняется на загрузке страницы
 document.addEventListener("DOMContentLoaded", async () => {
   const searchBar = document.getElementById("search_bar");
   searchBar.addEventListener("keypress", function (event) {
