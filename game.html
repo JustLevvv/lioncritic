@@ -3,9 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/circles.css">
+  <link rel="stylesheet" href="styles/index.css">
+  <link rel="stylesheet" href="styles/game.css">
   <title>Lioncritic - Информация об игре</title>
+  <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
 </head>
 <body>
-  
+  <div class="background">
+    <ul class="circles">
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+    </ul>
+  </div>
+  <main class="main">
+    <div class="info_background" id="main_div">
+      <label id="game_title">Game Name</label>
+
+    </div>
+  </main>
+  <header class="hat">
+    <div class="icon">
+      <img class="icon_image" src="favicon/android-chrome-192x192.png" width="64" height="64">
+      <h1 class="title">ioncritic</h1>
+    </div>
+    <div class="profile" onclick="showText()">
+      <p id="profile_text">Пока ничего</p>
+      
+    </div>
+  </header>
+
+  <script src="scripts/game.js"></script>
 </body>
 </html>

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles/index.css">
   <link rel="stylesheet" href="styles/circles.css">
   <title>Lioncritic</title>
@@ -15,6 +17,19 @@
       <li></li><li></li><li></li><li></li><li></li>
     </ul>
   </div>
+  <header class="hat">
+    <div class="icon">
+      <img class="icon_image" src="favicon/android-chrome-192x192.png" width="64" height="64">
+      <h1 class="title">ioncritic</h1>
+    </div>
+    <input type="text" id="search_bar" class="search_bar" placeholder="Поиск" spellcheck="false">
+    <button onclick="search()"> ПОИСК </button>
+    <button onclick="filterGames({})"> СБРОС </button>
+    <div class="profile" onclick="showText()">
+      <p id="profile_text">Пока ничего</p>
+      
+    </div>
+  </header>
   <main class="main">
     <button onclick="showGame()">Добавить игру</button>
     <button onclick="hideGame()">Убавить игру</button>
@@ -22,16 +37,6 @@
       
     </div>
   </main>
-  <header class="hat">
-    <div class="icon">
-      <img class="icon_image" src="favicon/android-chrome-192x192.png" width="64" height="64">
-      <h1 class="title">ioncritic</h1>
-    </div>
-    <div class="profile" onclick="showText()">
-      <p id="profile_text">Пока ничего</p>
-      
-    </div>
-  </header>
   
 
 
