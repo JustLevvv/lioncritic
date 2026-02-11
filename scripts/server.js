@@ -11,16 +11,17 @@ app.use(express.static("."));
 app.use(cookieParser());
 const port = 3000;
 const genres = [
-  "Action",
-  "RPG",
-  "Adventure",
-  "Strategy",
-  "Simulation",
-  "Puzzle",
-  "Survival",
-  "Horror",
-  "Sports",
-  "MMO",
+  "action",
+  "rpg",
+  "adventure",
+  "strategy",
+  "simulation",
+  "puzzle",
+  "survival",
+  "horror",
+  "sports",
+  "mmo",
+  "sandbox",
 ];
 
 let db;
@@ -32,7 +33,6 @@ initDB().then((database) => {
 // Регистрация нового пользователя
 app.post("/api/register", requireGuest, async (req, res) => {
   try {
-    console.log("server");
     const result = await register(req.body);
     res.json(result);
   } catch (error) {
@@ -127,7 +127,7 @@ app.post("/api/filter", async (req, res) => {
       params.push(`%${dev}%`);
       query += ` AND g.developer LIKE ?`;
     }
-    if (genres.includes(genre)) {
+    if (genres.includes(genre.toLowerCase())) {
       params.push(`${genre}`);
       query += ` AND g.genre LIKE ?`;
     }

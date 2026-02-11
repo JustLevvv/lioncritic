@@ -27,19 +27,38 @@
     <input type="text" id="search_bar" class="search_bar" placeholder="Поиск" spellcheck="false">
     <button onclick="search()"> ПОИСК </button>
     <button onclick="filterGames({})"> СБРОС </button>
-    <div class="profile" onclick="login()">
-      <p id="profile_text">Пока ничего</p>
+    <div class="profile" onclick="profileContext()">
+      <p id="profile_text" class="profile_text">Гость</p>
+      <p id="profile_number" class="profile_text">8 ★</p>
       
     </div>
   </header>
   <main class="main">
-    <button onclick="logout()">Выйти из акка</button>
-    <button onclick="register()">register</button>
+    <div class="guest_context_box display_none" id="guest_context_box">
+      <input type="text" id="login_username" class="profile_context_bar" placeholder="Логин" spellcheck="false">
+      <input type="password" id="login_password" class="profile_context_bar" placeholder="Пароль" spellcheck="false">
+      <button onclick="login()" class="profile_context_bar">Вход</button>
+      <button onclick="setRegister()" class="profile_context_bar">Регистрация</button>
+    </div>
+    <div class="register_context_box display_none" id="register_context_box">
+      <input type="text" id="register_username" class="profile_context_bar" placeholder="Логин" spellcheck="false">
+      <input type="password" id="register_password" class="profile_context_bar" placeholder="Пароль" spellcheck="false">
+      <input type="password" id="register_password_repeat" class="profile_context_bar" placeholder="Повторите пароль" spellcheck="false">
+      <input type="text" id="register_email" class="profile_context_bar" placeholder="Почта" spellcheck="false">
+      <button onclick="register()" class="profile_context_bar">Зарегистрироваться</button>
+      <button onclick="setLogin()" class="profile_context_bar">Отмена</button>
+    </div>
+    <div class="authorized_context_box display_none" id="authorized_context_box">
+      <button onclick="logout()" class="profile_context_bar">Выйти из аккаунта</button>
+    </div>
+    
     <div class="games_grid" id="games_grid">
       
     </div>
   </main>
-  
+  <div class="notification display_none">
+    <p>Уведомление!</p>
+  </div>
 
 
   <script src="scripts/client.js"></script>

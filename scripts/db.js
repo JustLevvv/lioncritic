@@ -77,7 +77,10 @@ export async function initDB() {
     VALUES
     (1, 'Factorio', 'Factorio is a game about building and creating automated factories to produce items of increasing complexity, within an infinite 2D world. Use your imagination to design your factory, combine simple elements into ingenious structures, and finally protect it from the creatures who don''t really like you.', 'strategy', '2020-08-14', 'Wube Software LTD.'),
     (2, 'The Elder Scrolls V: Skyrim', NULL, 'rpg', '2011-11-11', 'Bethesda Game Studios'),
-    (3, 'Euro Truck Simulator 2', 'Travel across Europe as king of the road, a trucker who delivers important cargo across impressive distances! With dozens of cities to explore, your endurance, skill and speed will all be pushed to their limits.', 'simulation', '2012-10-18', 'SCS Software')
+    (3, 'Euro Truck Simulator 2', 'Travel across Europe as king of the road, a trucker who delivers important cargo across impressive distances! With dozens of cities to explore, your endurance, skill and speed will all be pushed to their limits.', 'simulation', '2012-10-18', 'SCS Software'),
+    (4, 'Asseto Corsa', NULL, 'sports', '2014-12-19', 'Kunos Simulazioni'),
+    (5, 'ULTRAKILL', NULL, 'action', '2020-09-03', 'Arsi "Hakita" Patala'),
+    (6, 'Half-Life: Alyx', NULL, 'action', '2020-03-23', 'Valve')
   `);
 
   await db.run("DELETE FROM sessions WHERE expiration_date <= datetime('now')");

@@ -9,7 +9,6 @@ function generateSessionId() {
 
 // Регистрация
 export async function register(data) {
-  console.log("mw");
   const { username, email, password, confirmPassword } = data;
 
   if (password !== confirmPassword) {

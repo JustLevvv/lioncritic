@@ -1,19 +1,31 @@
 "use strict";
 
+async function setLogin() {
+  document.getElementById("register_context_box").classList.add("display_none");
+  document.getElementById("guest_context_box").classList.remove("display_none");
+}
+
+async function setRegister() {
+  document.getElementById("guest_context_box").classList.add("display_none");
+  document
+    .getElementById("register_context_box")
+    .classList.remove("display_none");
+}
+
 // Логин
 async function login() {
   const response = await fetch("/api/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      username: "Croc1954",
-      password: "1234",
+      username: document.getElementById("login_username").value,
+      password: document.getElementById("login_password").value,
     }),
   });
   const data = await response.json();
   if (response.ok) {
     alert("Вход!");
-    userInfo();
+    checkLogging();
   } else {
     alert("Ошибка: " + data.error);
   }
@@ -34,30 +46,54 @@ async function userInfo() {
   const response = await fetch("/api/currentuser");
   if (response.ok) {
     const user = await response.json();
-    const element = document.getElementById("profile_text");
-    element.textContent = user.username;
+    return user;
   }
 }
 
 // Регистрация
 async function register() {
-  console.log("client");
   const response = await fetch("/api/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      username: "Obama2.0",
-      email: "president@usa.gov",
-      password: "obamamama",
-      confirmPassword: "obamamama",
+      username: document.getElementById("register_username").value,
+      email: document.getElementById("register_email").value,
+      password: document.getElementById("register_password").value,
+      confirmPassword: document.getElementById("register_password_repeat")
+        .value,
     }),
   });
 
   const data = await response.json();
   if (response.ok) {
-    alert("Регистрация успешна! Теперь войдите.");
+    setLogin();
   } else {
     alert("Ошибка: " + data.error);
+  }
+}
+
+// Проверка входа
+async function checkLogging() {
+  const response = await fetch("/api/currentuser", {
+    credentials: "include",
+  });
+  if (response.ok) {
+    document.getElementById("profile_number").classList.remove("display_none");
+    document.getElementById("guest_context_box").classList.add("display_none");
+    document
+      .getElementById("authorized_context_box")
+      .classList.remove("display_none");
+    const user = await response.json();
+    document.getElementById("profile_text").textContent = user.username;
+  } else {
+    document.getElementById("profile_number").classList.add("display_none");
+    document
+      .getElementById("authorized_context_box")
+      .classList.add("display_none");
+    document
+      .getElementById("guest_context_box")
+      .classList.remove("display_none");
+    document.getElementById("profile_text").textContent = "Гость";
   }
 }
 
@@ -75,8 +111,8 @@ async function showGame(gameID) {
   const panel = `
   <a href="/game.html?${gameID}" class="panel_link">
     <div class="panel" id="${gameID}">
-      <div class ="game_image">
-        <img src="game_previews/${gameID}.jpg" title="game_${gameID}" width="280" height="400">
+      <div class="game_image">
+        <img class="game_image_img" src="game_previews/${gameID}.jpg" title="game_${gameID}" width="280" height="400">
       </div>
       <div class="game_info">
         <label class="game_name">${gameName}</label>
@@ -184,6 +220,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       search();
     }
   });
+  searchBar.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      filterGames({});
+      searchBar.value = "";
+      searchBar.disabled = true;
+      searchBar.disabled = false;
+    }
+  });
+  checkLogging();
 
   filterGames({});
 });
