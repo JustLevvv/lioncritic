@@ -20,8 +20,130 @@
   </div>
   <main class="main">
     <div class="info_background" id="main_div">
-      <label id="game_title">Game Name</label>
+      <div class="info_main">
+        <div class="info_image" id="info_image"></div>
+        <div class="tags">
+          <p id="game_title"></p>
+          <div class="game_feature">
+            <p class="info_title">Разработчик:</p>
+            <p id="dev" class="info_text">Разработчик не найден</p>
+          </div>
+          <div class="game_feature">
+            <p class="info_title">Жанр:</p>
+            <p id="genre" class="info_text">Жанр не найден</p>
+          </div>
+          <div class="game_feature">
+            <p class="info_title">Дата выхода:</p>
+            <p id="date" class="info_text">yyyy-MM-dd</p>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <p id="description">Описание к игре не найдено.</p>
+      </div>
+      
+      <div class="rating_container">
 
+        <div class="current_rating">
+          <p class="rating_title">Глобальный рейтинг</p>
+          
+          <p class="rating_type">Геймплей</p>
+          <div class="rating">
+            <div class="star_container">
+              <img class="star_border" src="other_images/star_border.svg" width="60" height="60">
+              <div class="star_clip" id="star_clip_gameplay">
+                <img class="star" id="star_gameplay" src="other_images/star.svg" width="60" height="60">
+              </div>
+            </div>
+            <p class="score" id="gameplay_score">5.0</p>
+          </div>
+
+          <p class="rating_type">Графика и визуал</p>
+          <div class="rating">
+            <div class="star_container">
+              <img class="star_border" src="other_images/star_border.svg" width="60" height="60">
+              <div class="star_clip" id="star_clip_graphics">
+                <img class="star" id="star_graphics" src="other_images/star.svg" width="60" height="60">
+              </div>
+            </div>
+            <p class="score" id="graphics_score">5.0</p>
+          </div>
+
+          <p class="rating_type">Сюжет и лор</p>
+          <div class="rating">
+            <div class="star_container">
+              <img class="star_border" src="other_images/star_border.svg" width="60" height="60">
+              <div class="star_clip" id="star_clip_story">
+                <img class="star" id="star_story" src="other_images/star.svg" width="60" height="60">
+              </div>
+            </div>
+            <p class="score" id="story_score">5.0</p>
+          </div>
+
+          <p class="rating_type">Звуки и саундтрек</p>
+          <div class="rating">
+            <div class="star_container">
+              <img class="star_border" src="other_images/star_border.svg" width="60" height="60">
+              <div class="star_clip" id="star_clip_sound">
+                <img class="star" id="star_sound" src="other_images/star.svg" width="60" height="60">
+              </div>
+            </div>
+            <p class="score" id="sound_score">5.0</p>
+          </div>
+
+          <p class="overall_type">Общий</p>
+
+          <div class="overall_rating">
+            <div class="overall_star_container">
+              <img class="overall_star_border" src="other_images/star_border.svg" width="80" height="80">
+              <div class="overall_star_clip" id="star_clip_overall">
+                <img class="overall_star" id="star_overall" src="other_images/star.svg" width="80" height="80">
+              </div>
+            </div>
+            <div class="overall_score_numbers">
+              <p class="overall_score" id="overall_score">5.0</p>
+              <p class="rates_quantity" id="overall_rates">0</p>
+            </div>
+          </div>
+
+
+        </div>
+        <div class="user_rating">
+          <div class="guest_blocking" id="guest_blocking">
+            <p class="guest_blocking_text">Вы не авторизовались! Пожалуйста, войдите в аккаунт или зарегистрируйтесь на главной странице, чтобы оценивать игры.</p>
+          </div>
+          <p class="rating_title">Ваша оценка</p>
+          <p class="rating_type">Геймплей</p>
+          <div class="rating">
+            <div class="user_star_container">
+            </div>
+            <p class="user_score">?/10</p>
+          </div>
+
+          <p class="rating_type">Графика и визуал</p>
+          <div class="rating">
+            <div class="user_star_container">
+            </div>
+            <p class="user_score">?/10</p>
+          </div>
+
+          <p class="rating_type">Сюжет и лор</p>
+          <div class="rating">
+            <div class="user_star_container">
+            </div>
+            <p class="user_score">?/10</p>
+          </div>
+
+          <p class="rating_type">Звуки и саундтрек</p>
+          <div class="rating">
+            <div class="user_star_container">
+            </div>
+            <p class="user_score">?/10</p>
+          </div>
+          <button class="rate_button display_none">Оценить!</button>
+          <p id="last_rate">Вы ещё не оценивали эту игру. Чтобы оценить её, нажмите на звёзды и подтвердите оценку.</p>
+        </div>
+      </div>
     </div>
   </main>
   <header class="hat">
@@ -31,8 +153,9 @@
         <h1 class="title">ioncritic</h1>
       </a>
     </div>
-    <div class="profile" onclick="showText()">
-      <p id="profile_text">Пока ничего</p>
+    <div class="profile_unclickable">
+      <p id="profile_text" class="profile_text">Гость</p>
+      <p id="profile_number" class="profile_text"></p>
       
     </div>
   </header>

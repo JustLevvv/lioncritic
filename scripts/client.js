@@ -1,5 +1,39 @@
 "use strict";
 
+let isProfileContextVisible = 1;
+
+// Скрытие контекст бокса профиля
+async function profileContext() {
+  isProfileContextVisible = 1 - isProfileContextVisible;
+  const isLogged = await checkLogging();
+  if (isProfileContextVisible) {
+    if (isLogged) {
+      document
+        .getElementById("authorized_context_box")
+        .classList.remove("display_none");
+    } else {
+      document
+        .getElementById("guest_context_box")
+        .classList.remove("display_none");
+    }
+  } else {
+    if (isLogged) {
+      console.log(isLogged, isProfileContextVisible);
+      document
+        .getElementById("authorized_context_box")
+        .classList.add("display_none");
+      console.log(document.getElementById("authorized_context_box").classList);
+    } else {
+      document
+        .getElementById("guest_context_box")
+        .classList.add("display_none");
+      document
+        .getElementById("register_context_box")
+        .classList.add("display_none");
+    }
+  }
+}
+
 async function setLogin() {
   document.getElementById("register_context_box").classList.add("display_none");
   document.getElementById("guest_context_box").classList.remove("display_none");
@@ -25,7 +59,8 @@ async function login() {
   const data = await response.json();
   if (response.ok) {
     alert("Вход!");
-    checkLogging();
+    await checkLogging();
+    profileContext();
   } else {
     alert("Ошибка: " + data.error);
   }
@@ -85,6 +120,9 @@ async function checkLogging() {
       .classList.remove("display_none");
     const user = await response.json();
     document.getElementById("profile_text").textContent = user.username;
+    document.getElementById("profile_number").textContent =
+      user.rates_quantity + " ★";
+    return 1;
   } else {
     document.getElementById("profile_number").classList.add("display_none");
     document
@@ -94,6 +132,8 @@ async function checkLogging() {
       .getElementById("guest_context_box")
       .classList.remove("display_none");
     document.getElementById("profile_text").textContent = "Гость";
+    document.getElementById("profile_number").textContent = "";
+    return 0;
   }
 }
 
@@ -230,6 +270,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
   checkLogging();
+  profileContext();
 
   filterGames({});
 });

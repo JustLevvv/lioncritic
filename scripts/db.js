@@ -37,15 +37,15 @@ export async function initDB() {
       developer TEXT,
       creation_date TEXT DEFAULT (datetime('now')), -- YYYY-MM-DD
       -- ↓ Оценка ↓ --
-      overall_score REAL CHECK (story_score IS NULL OR (story_score >= 0 AND story_score <= 10)),
+      overall_score REAL CHECK (overall_score IS NULL OR (overall_score >= 0 AND overall_score <= 10)),
       overall_rates INTEGER DEFAULT 0,
-      gameplay_score REAL CHECK (story_score IS NULL OR (story_score >= 0 AND story_score <= 10)),
+      gameplay_score REAL CHECK (gameplay_score IS NULL OR (gameplay_score >= 0 AND gameplay_score <= 10)),
       gameplay_rates INTEGER DEFAULT 0,
-      graphics_score REAL CHECK (story_score IS NULL OR (story_score >= 0 AND story_score <= 10)),
+      graphics_score REAL CHECK (graphics_score IS NULL OR (graphics_score >= 0 AND graphics_score <= 10)),
       graphics_rates INTEGER DEFAULT 0,
       story_score REAL CHECK (story_score IS NULL OR (story_score >= 0 AND story_score <= 10)),
       story_rates INTEGER DEFAULT 0,
-      sound_score REAL CHECK (story_score IS NULL OR (story_score >= 0 AND story_score <= 10)),
+      sound_score REAL CHECK (sound_score IS NULL OR (sound_score >= 0 AND sound_score <= 10)),
       sound_rates INTEGER DEFAULT 0
     )  
   `);
@@ -57,6 +57,23 @@ export async function initDB() {
       user_id INTEGER NOT NULL,
       expiration_date DATETIME NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Оценки
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS rates (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      game_id INTEGER NOT NULL,
+      rate_date TEXT DEFAULT (datetime('now')),
+      gameplay_score INTEGER CHECK (gameplay_score IS NULL OR (gameplay_score >= 0 AND gameplay_score <= 10)),
+      graphics_score INTEGER CHECK (graphics_score IS NULL OR (graphics_score >= 0 AND graphics_score <= 10)),
+      story_score INTEGER CHECK (story_score IS NULL OR (story_score >= 0 AND story_score <= 10)),
+      sound_score INTEGER CHECK (sound_score IS NULL OR (sound_score >= 0 AND sound_score <= 10)),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE,
+      UNIQUE(user_id, game_id)
     )
   `);
 
@@ -81,6 +98,13 @@ export async function initDB() {
     (4, 'Asseto Corsa', NULL, 'sports', '2014-12-19', 'Kunos Simulazioni'),
     (5, 'ULTRAKILL', NULL, 'action', '2020-09-03', 'Arsi "Hakita" Patala'),
     (6, 'Half-Life: Alyx', NULL, 'action', '2020-03-23', 'Valve')
+  `);
+
+  // Тестовые оценки
+  await db.exec(`
+    INSERT OR IGNORE INTO rates (user_id, game_id, gameplay_score, graphics_score, story_score, sound_score)
+    VALUES
+    (1, 1, 9, 9, 5, 8)
   `);
 
   await db.run("DELETE FROM sessions WHERE expiration_date <= datetime('now')");

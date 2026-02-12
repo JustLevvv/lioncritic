@@ -1,10 +1,222 @@
-.info_background {
-  background: linear-gradient(180deg, #ddd, #bbb);
-  margin: 5vh;
-  margin-left: 5vw;
-  margin-right: 5vw;
-  width: 90vw;
-  height: auto;
-  border-radius: 20px;
+.profile_unclickable {
+  background-color: #222;
+  position: absolute;
   display: flex;
+  align-items: center;
+  right: 20px;
+  height: 90px;
+  width: 200px;
+  padding: 0;
+}
+
+.info_background {
+  background: linear-gradient(180deg, rgba(221, 221, 221, 0.7), rgba(187, 187, 187, 0.5));
+  margin: 5vh 5vw;
+  width: 90vw;
+  height: 80vh;
+  border-radius: 40px;
+  display: flex;
+  overflow: hidden;
+}
+
+.info_main {
+  background-color: rgba(187, 187, 187, 0.2);
+}
+
+.info_title {
+  margin: 0;
+  color: #373737;
+}
+
+.info_text {
+  margin: 0;
+  font-size: 18px;
+}
+
+#game_title {
+  margin: 10px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.game_feature {
+  margin: 10px;
+}
+
+.rating_container {
+  width: auto;
+  height: 100%;
+  display: flex;
+}
+
+.current_rating {
+  padding: 0 20px;
+  width: 220px;
+  height: 100%;
+  align-items: center;
+  background-color: rgba(187, 187, 187, 0.2);
+}
+
+.score {
+  font-size: 50px;
+  margin: 0;
+}
+
+.overall_star_clip{
+  position: relative;
+  height: 24px; /* dynamic 60px - 100% */
+  overflow: hidden;
+  top: 46px; /* dynamic 10px+ */
+}
+
+.overall_star{
+  position: relative;
+  bottom: 46px; /* dynamic 10px+ */
+}
+
+.overall_star_border {
+  position: absolute;
+}
+
+.overall_star_container {
+  height: 80px;
+  width: 80px;
+}
+
+.overall_rating {
+  display: flex;
+  height: 100px;
+}
+
+.overall_score {
+  font-size: 70px;
+  margin: 0;
+}
+
+.rates_quantity {
+  margin: 0;
+}
+
+
+.star_clip{
+  position: relative;
+  height: 15px; /* dynamic 40px - 100% */
+  overflow: hidden;
+  top: 35px; /* dynamic 10px+ */
+}
+
+.star{
+  position: relative;
+  bottom: 35px; /* dynamic 10px+ */
+}
+
+.star_border {
+  position: absolute;
+}
+
+.star_container {
+  height: 60px;
+  width: 60px;
+}
+
+.user_rating {
+  padding: 0 20px;
+  position: relative;
+}
+
+
+.user_star {
+  position: absolute;
+  animation: starAppear 0.4s ease;
+  cursor: pointer;
+}
+
+.user_star:hover, .user_star_border:hover {
+  filter: brightness(1.2);
+}
+
+.user_star_border {
+  position: absolute;
+  cursor: pointer;
+}
+
+.user_star_container {
+  height: 60px;
+  width: auto;
+  display: flex;
+}
+
+.star_container_relative {
+  position: relative;
+  width: 40px;
+}
+
+.rating {
+  display: flex;
+  height: 80px;
+  flex-direction: row;
+}
+
+.rating_type {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.overall_type {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.desc {
+  width: 30%;
+  padding: 10px;
+}
+
+#last_rate {
+  width: 500px;
+  font-size: 18px;
+}
+
+.rating_title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#description {
+  margin: 0;
+  font-size: 18px;
+}
+
+.guest_blocking {
+  width: 87%;
+  height: 90%;
+  margin: 5%;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  background-color: rgba(20, 20, 20, 0.7);
+  align-items: center;
+  position: absolute;
+  backdrop-filter: blur(7px);
+  padding-left: 20px;
+  border-radius: 10px;
+}
+
+.guest_blocking_text {
+  color: #bbb;
+  font-size: 24px;  
+  width: 600px;
+  text-align: center;
+  margin: 20% auto;
+}
+
+@keyframes starAppear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

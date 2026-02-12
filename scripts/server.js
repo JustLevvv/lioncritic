@@ -51,7 +51,7 @@ app.post("/api/login", requireGuest, async (req, res) => {
       maxAge: 1 * 24 * 60 * 60 * 1000,
     });
     res.json({ message: "Успешная авторизация" });
-  } catch {
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -72,7 +72,7 @@ app.get("/api/currentuser", requireAuth, async (req, res) => {
   try {
     const user = await db.get(
       `SELECT 
-        id, username, email, creation_date 
+        id, username, email, creation_date, rates_quantity 
         FROM users 
         WHERE id = ?`,
       [req.user.id],
@@ -139,6 +139,31 @@ app.post("/api/filter", async (req, res) => {
 
     const filtered = await db.all(query, params);
     res.json(filtered);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Получение информации об оценке пользователя
+app.get("/api/get-user-rate/:gameid", requireAuth, async (req, res) => {
+  try {
+    const gameID = req.params.gameid;
+    const rate = await db.get(
+      `
+      SELECT
+        gameplay_score,
+        graphics_score,
+        story_score,
+        sound_score,
+        rate_date
+      FROM rates r
+      WHERE r.user_id = ? AND r.game_id = ?
+      `,
+      [req.user.id, gameID],
+    );
+
+    if (!rate) return res.json(null);
+    res.json(rate);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
