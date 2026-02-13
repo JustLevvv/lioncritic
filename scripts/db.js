@@ -40,13 +40,9 @@ export async function initDB() {
       overall_score REAL CHECK (overall_score IS NULL OR (overall_score >= 0 AND overall_score <= 10)),
       overall_rates INTEGER DEFAULT 0,
       gameplay_score REAL CHECK (gameplay_score IS NULL OR (gameplay_score >= 0 AND gameplay_score <= 10)),
-      gameplay_rates INTEGER DEFAULT 0,
       graphics_score REAL CHECK (graphics_score IS NULL OR (graphics_score >= 0 AND graphics_score <= 10)),
-      graphics_rates INTEGER DEFAULT 0,
       story_score REAL CHECK (story_score IS NULL OR (story_score >= 0 AND story_score <= 10)),
-      story_rates INTEGER DEFAULT 0,
-      sound_score REAL CHECK (sound_score IS NULL OR (sound_score >= 0 AND sound_score <= 10)),
-      sound_rates INTEGER DEFAULT 0
+      sound_score REAL CHECK (sound_score IS NULL OR (sound_score >= 0 AND sound_score <= 10))
     )  
   `);
 
@@ -67,6 +63,7 @@ export async function initDB() {
       user_id INTEGER NOT NULL,
       game_id INTEGER NOT NULL,
       rate_date TEXT DEFAULT (datetime('now')),
+      trust_k REAL NOT NULL CHECK (trust_k >= 0 AND trust_k <= 1),
       gameplay_score INTEGER CHECK (gameplay_score IS NULL OR (gameplay_score >= 0 AND gameplay_score <= 10)),
       graphics_score INTEGER CHECK (graphics_score IS NULL OR (graphics_score >= 0 AND graphics_score <= 10)),
       story_score INTEGER CHECK (story_score IS NULL OR (story_score >= 0 AND story_score <= 10)),
@@ -97,14 +94,18 @@ export async function initDB() {
     (3, 'Euro Truck Simulator 2', 'Travel across Europe as king of the road, a trucker who delivers important cargo across impressive distances! With dozens of cities to explore, your endurance, skill and speed will all be pushed to their limits.', 'simulation', '2012-10-18', 'SCS Software'),
     (4, 'Asseto Corsa', NULL, 'sports', '2014-12-19', 'Kunos Simulazioni'),
     (5, 'ULTRAKILL', NULL, 'action', '2020-09-03', 'Arsi "Hakita" Patala'),
-    (6, 'Half-Life: Alyx', NULL, 'action', '2020-03-23', 'Valve')
+    (6, 'Half-Life: Alyx', NULL, 'adventure', '2020-03-23', 'Valve'),
+    (7, 'RimWorld', 'A sci-fi colony sim driven by an intelligent AI storyteller. Generates stories by simulating psychology, ecology, gunplay, melee combat, climate, biomes, diplomacy, interpersonal relationships, art, medicine, trade, and more.', 'strategy', '2018-10-17', 'Ludeon Studios'),
+    (8, 'Neverwinter', NULL, 'mmo', '2013-02-12', 'Cryptic Studios'),
+    (9, 'Firewatch', NULL, 'adventure', '2016-02-09', 'Campo Santo'),
+    (10, 'Ori and the Blind Forest', NULL, 'platformer', '2015-03-11', 'Moon Studios')
   `);
 
   // Тестовые оценки
   await db.exec(`
-    INSERT OR IGNORE INTO rates (user_id, game_id, gameplay_score, graphics_score, story_score, sound_score)
+    INSERT OR IGNORE INTO rates (user_id, game_id, trust_k, gameplay_score, graphics_score, story_score, sound_score)
     VALUES
-    (1, 1, 9, 9, 5, 8)
+    (1, 1, 1, 9, 9, 5, 8)
   `);
 
   await db.run("DELETE FROM sessions WHERE expiration_date <= datetime('now')");

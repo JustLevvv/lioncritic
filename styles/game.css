@@ -177,6 +177,7 @@
 #last_rate {
   width: 500px;
   font-size: 18px;
+  margin-top: 50px;
 }
 
 .rating_title {
@@ -190,9 +191,9 @@
 }
 
 .guest_blocking {
-  width: 87%;
-  height: 90%;
-  margin: 5%;
+  width: 91%;
+  height: 94%;
+  margin: 3%;
   top: 0;
   left: 0;
   z-index: 3;
@@ -207,9 +208,13 @@
 .guest_blocking_text {
   color: #bbb;
   font-size: 24px;  
-  width: 600px;
+  width: 400px;
   text-align: center;
-  margin: 20% auto;
+  margin: 30% auto;
+}
+
+.rate_buttons {
+  position: absolute;
 }
 
 @keyframes starAppear {

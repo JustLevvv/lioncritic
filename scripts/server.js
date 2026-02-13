@@ -14,6 +14,7 @@ const genres = [
   "action",
   "rpg",
   "adventure",
+  "platformer",
   "strategy",
   "simulation",
   "puzzle",
@@ -165,6 +166,127 @@ app.get("/api/get-user-rate/:gameid", requireAuth, async (req, res) => {
     if (!rate) return res.json(null);
     res.json(rate);
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Получение и запись оценки пользователя
+app.post("/api/send-rate/:gameid", requireAuth, async (req, res) => {
+  try {
+    const gameID = req.params.gameid;
+    const { gameplay, graphics, story, sound } = req.body;
+    const userID = req.user.id;
+    const TRUST_THRESHOLD = 10;
+    const WEIGHT = 20;
+    const AVG_RATE = 6.5;
+
+    const ratesQReq = await db.get(
+      `SELECT
+        rates_quantity
+        FROM users
+        WHERE id = ?
+      `,
+      [userID],
+    );
+    const ratesQ = ratesQReq.rates_quantity || 0;
+
+    const trustK = Math.min(1, ratesQ / TRUST_THRESHOLD);
+
+    const currentRate = await db.get(
+      `SELECT
+        id
+        FROM rates
+        WHERE user_id = ? AND game_id = ?
+      `,
+      [userID, gameID],
+    );
+
+    if (currentRate) {
+      await db.run(
+        `
+      UPDATE rates
+        SET 
+        trust_k = ?,
+        gameplay_score = ?,
+        graphics_score = ?,
+        story_score = ?,
+        sound_score = ?
+        WHERE user_id = ? AND game_id = ?
+      `,
+        [trustK, gameplay, graphics, story, sound, userID, gameID],
+      );
+    } else {
+      await db.run(
+        `
+        UPDATE users
+          SET rates_quantity = rates_quantity + 1
+          WHERE id = ?
+        `,
+        [userID],
+      );
+
+      await db.run(
+        `
+        INSERT INTO rates
+          (user_id, game_id, trust_k, gameplay_score, graphics_score, story_score, sound_score)
+          VALUES
+          (?, ?, ?, ?, ?, ?, ?)
+        `,
+        [userID, gameID, trustK, gameplay, graphics, story, sound],
+      );
+    }
+    // ФОРМУЛА-X
+    const trustQReq = await db.get(
+      `SELECT 
+        SUM(trust_k) as sum
+        FROM rates
+        WHERE game_id = ?`,
+      [gameID],
+    );
+    const trustQ = trustQReq.sum || 0;
+    const categories = [
+      "gameplay_score",
+      "graphics_score",
+      "story_score",
+      "sound_score",
+    ];
+    let averageTrustRate, score, trustSum;
+    let overallScore = 0;
+    for (let i = 0; i < 4; i++) {
+      const trustSumReq = await db.get(
+        `SELECT 
+        SUM(trust_k * ${categories[i]}) as sum
+        FROM rates
+        WHERE game_id = ?`,
+        [gameID],
+      );
+      trustSum = trustSumReq.sum || 0;
+      averageTrustRate = trustSum / trustQ;
+      score =
+        (averageTrustRate * trustQ + WEIGHT * AVG_RATE) / (trustQ + WEIGHT);
+      score = Math.round(score * 10) / 10;
+      await db.run(
+        `UPDATE games
+          SET ${categories[i]} = ?
+          WHERE id = ?
+        `,
+        [score, gameID],
+      );
+      overallScore += score;
+    }
+    overallScore /= 4;
+    overallScore = Math.round(overallScore * 10) / 10;
+    await db.run(
+      `UPDATE games
+        SET overall_score = ?,
+        overall_rates = overall_rates + 1
+        WHERE id = ?
+      `,
+      [overallScore, gameID],
+    );
+    res.json({ success: true, overallScore });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 });

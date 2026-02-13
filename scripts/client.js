@@ -146,7 +146,7 @@ async function showGame(gameID) {
   const gameName = data[0].title;
   const gameYear = data[0].release_date.split("-")[0];
   let rating = "" + (data[0].overall_score || 5.0);
-  if (rating.length) rating += ".0";
+  if (rating.length == 1) rating += ".0";
   const rating_q = data[0].overall_rates;
   const panel = `
   <a href="/game.html?${gameID}" class="panel_link">
@@ -249,6 +249,11 @@ async function search() {
   } catch (error) {
     console.log(error.message, error.stack);
   }
+}
+
+async function cancelSearch() {
+  document.getElementById("search_bar").value = "";
+  filterGames({});
 }
 
 // Выполняется на загрузке страницы

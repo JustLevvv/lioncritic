@@ -117,30 +117,33 @@
           <div class="rating">
             <div class="user_star_container">
             </div>
-            <p class="user_score">?/10</p>
+            <p class="user_score" id="user_score_1">?/10</p>
           </div>
 
           <p class="rating_type">Графика и визуал</p>
           <div class="rating">
             <div class="user_star_container">
             </div>
-            <p class="user_score">?/10</p>
+            <p class="user_score" id="user_score_2">?/10</p>
           </div>
 
           <p class="rating_type">Сюжет и лор</p>
           <div class="rating">
             <div class="user_star_container">
             </div>
-            <p class="user_score">?/10</p>
+            <p class="user_score" id="user_score_3">?/10</p>
           </div>
 
           <p class="rating_type">Звуки и саундтрек</p>
           <div class="rating">
             <div class="user_star_container">
             </div>
-            <p class="user_score">?/10</p>
+            <p class="user_score" id="user_score_4">?/10</p>
           </div>
-          <button class="rate_button display_none">Оценить!</button>
+          <div class="rate_buttons display_none" id="rate_buttons">
+            <button class="rate_button" onclick="sendRate()">Оценить!</button>
+            <button class="unrate_button" onclick="cancelRate()">Отмена</button>
+          </div>
           <p id="last_rate">Вы ещё не оценивали эту игру. Чтобы оценить её, нажмите на звёзды и подтвердите оценку.</p>
         </div>
       </div>

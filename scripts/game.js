@@ -1,5 +1,12 @@
 "use strict";
 
+const chosenRate = {
+  gameplay: null,
+  graphics: null,
+  story: null,
+  sound: null,
+};
+
 // Проверка входа
 async function checkLogging() {
   const response = await fetch("/api/currentuser", {
@@ -69,7 +76,6 @@ async function showGameFull(gameID) {
     document.getElementById("sound_score").textContent = soundScore;
 
   let rates = await getUserRate(gameID);
-  console.log(rates);
   const categories = [
     "gameplay_score",
     "graphics_score",
@@ -130,18 +136,20 @@ async function showGameFull(gameID) {
   // Звёзды пользователя
   const starContainers = document.getElementsByClassName("user_star_container");
   for (let i = 0; i < 4; i++) {
+    let rate = userRates[categories[i]];
     for (let j = 0; j < 10; j++) {
       let star = `
-      <div class="star_container_relative" id="star_${i + 1}-${j + 1}" onclick="setRating(${i + 1}, ${j + 1})">
+      <div class="star_container_relative" onclick="setRating(${i + 1}, ${j + 1})">
       <img class="user_star_border" src="other_images/star_border.svg" width="40" height="40">
       `;
       if (userRates[categories[i]] > j) {
-        star += `<img class="user_star"src="other_images/star.svg" width="40" height="40">`;
+        star += `<img class="user_star" id="star_${i + 1}-${j + 1}" src="other_images/star.svg" width="40" height="40">`;
+      } else {
+        star += `<img class="user_star display_none" id="star_${i + 1}-${j + 1}" src="other_images/star.svg" width="40" height="40">`;
       }
       star += `</div>`;
       starContainers[i].insertAdjacentHTML("beforeend", star);
     }
-    let rate = userRates[categories[i]];
     if (rate === 0) {
       rate = "?";
     }
@@ -161,6 +169,65 @@ async function getUserRate(gameID) {
   });
 
   return await response.json();
+}
+
+// Изменение рейтинга локальное
+async function setRating(starCategory, starID) {
+  for (let i = 1; i <= 10; i++) {
+    if (i <= starID)
+      document
+        .getElementById(`star_${starCategory}-${i}`)
+        .classList.remove("display_none");
+    else
+      document
+        .getElementById(`star_${starCategory}-${i}`)
+        .classList.add("display_none");
+  }
+  document.getElementById("rate_buttons").classList.remove("display_none");
+  document.getElementById(`user_score_${starCategory}`).textContent =
+    starID + "/10";
+  const categories = ["gameplay", "graphics", "story", "sound"];
+  chosenRate[categories[starCategory - 1]] = starID;
+}
+
+// Подтверждение изменения рейтинга
+async function sendRate() {
+  const gameID = window.location.search.substring(1);
+  const response = await fetch(`/api/send-rate/${gameID}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(chosenRate),
+  });
+
+  location.reload();
+}
+
+// Отмена изменения рейтинга
+async function cancelRate() {
+  const rates = await getUserRate(window.location.search.substring(1));
+  const categories = [
+    "gameplay_score",
+    "graphics_score",
+    "story_score",
+    "sound_score",
+  ];
+  for (let i = 1; i <= 4; i++) {
+    for (let j = 1; j <= 10; j++) {
+      if (j <= rates[categories[i - 1]]) {
+        document
+          .getElementById(`star_${i}-${j}`)
+          .classList.remove("display_none");
+      } else {
+        document.getElementById(`star_${i}-${j}`).classList.add("display_none");
+      }
+    }
+    document.getElementById(`user_score_${i}`).textContent =
+      rates[categories[i - 1]] + "/10";
+  }
+  document.getElementById("rate_buttons").classList.add("display_none");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
