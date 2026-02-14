@@ -25,8 +25,8 @@
       </a>
     </div>
     <input type="text" id="search_bar" class="search_bar" placeholder="Поиск" spellcheck="false">
-    <img src="other_images/magnifier.svg" class="img_search_button" onclick="search()" width="40">
     <img src="other_images/cross.svg" class="img_cancel_search_button" onclick="cancelSearch()" width="40">
+    <img src="other_images/magnifier.svg" class="img_search_button" onclick="search()" width="40">
     <div class="profile" onclick="profileContext()">
       <p id="profile_text" class="profile_text">Гость</p>
       <p id="profile_number" class="profile_text"></p>
@@ -34,6 +34,10 @@
     </div>
   </header>
   <main class="main">
+    <div id="search_advice" class="search_advice display_none">
+      <p class="search_advice_text">Используйте ключи через пробел:</p>
+      <p class="search_advice_text">dev: genre: date:гггг-мм-дд unrated:1/0 order:gameplay/graphics/story/sound</p>
+    </div>
     <div class="moderator_tools display_none" id="moderator_tools">
       <p class="you_mod">Вы модератор</p>
       <button class="add_game_button" onclick="location.href='addGame.html'">Добавить игру</button>
@@ -48,7 +52,7 @@
       <input type="text" id="register_username" class="profile_context_bar" placeholder="Логин" spellcheck="false">
       <input type="password" id="register_password" class="profile_context_bar" placeholder="Пароль" spellcheck="false">
       <input type="password" id="register_password_repeat" class="profile_context_bar" placeholder="Повторите пароль" spellcheck="false">
-      <input type="text" id="register_email" class="profile_context_bar" placeholder="Почта" spellcheck="false">
+      <input type="email" id="register_email" class="profile_context_bar" placeholder="Почта" spellcheck="false">
       <button onclick="register()" class="profile_context_bar">Зарегистрироваться</button>
       <button onclick="setLogin()" class="profile_context_bar">Отмена</button>
     </div>

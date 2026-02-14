@@ -7,6 +7,8 @@ const chosenRate = {
   sound: null,
 };
 
+let areStarsUpdated = 0;
+
 // Проверка входа
 async function checkLogging() {
   const response = await fetch("/api/currentuser", {
@@ -64,16 +66,28 @@ async function showGameFull(gameID) {
   // Звёзды общие
   if (overallScore)
     document.getElementById("overall_score").textContent = overallScore;
+  // document.getElementById("overall_score").style.color =
+  //   colorRating(overallScore);
   if (overallRates)
     document.getElementById("overall_rates").textContent = overallRates;
+  // document.getElementById("overall_score").style.color =
+  //   colorRating(overallScore);
   if (gameplayScore)
     document.getElementById("gameplay_score").textContent = gameplayScore;
+  // document.getElementById("overall_score").style.color =
+  //   colorRating(overallScore);
   if (graphicsScore)
     document.getElementById("graphics_score").textContent = graphicsScore;
+  // document.getElementById("overall_score").style.color =
+  //   colorRating(overallScore);
   if (storyScore)
     document.getElementById("story_score").textContent = storyScore;
+  // document.getElementById("overall_score").style.color =
+  //   colorRating(overallScore);
   if (soundScore)
     document.getElementById("sound_score").textContent = soundScore;
+  // document.getElementById("overall_score").style.color =
+  //   colorRating(overallScore);
 
   let rates = await getUserRate(gameID);
   const categories = [
@@ -188,6 +202,18 @@ async function setRating(starCategory, starID) {
     starID + "/10";
   const categories = ["gameplay", "graphics", "story", "sound"];
   chosenRate[categories[starCategory - 1]] = starID;
+
+  if (!areStarsUpdated) {
+    areStarsUpdated = 1;
+    for (let i = 1; i <= 4; i++) {
+      if (i != starCategory) {
+        setRating(
+          i,
+          document.getElementById(`user_score_${i}`).textContent.split("/")[0],
+        );
+      }
+    }
+  }
 }
 
 // Подтверждение изменения рейтинга
@@ -214,20 +240,54 @@ async function cancelRate() {
     "story_score",
     "sound_score",
   ];
-  for (let i = 1; i <= 4; i++) {
-    for (let j = 1; j <= 10; j++) {
-      if (j <= rates[categories[i - 1]]) {
-        document
-          .getElementById(`star_${i}-${j}`)
-          .classList.remove("display_none");
-      } else {
+  if (!rates) {
+    for (let i = 1; i <= 4; i++) {
+      for (let j = 1; j <= 10; j++) {
         document.getElementById(`star_${i}-${j}`).classList.add("display_none");
       }
+      document.getElementById(`user_score_${i}`).textContent = "?/10";
     }
-    document.getElementById(`user_score_${i}`).textContent =
-      rates[categories[i - 1]] + "/10";
+  } else {
+    for (let i = 1; i <= 4; i++) {
+      for (let j = 1; j <= 10; j++) {
+        if (j <= rates[categories[i - 1]]) {
+          document
+            .getElementById(`star_${i}-${j}`)
+            .classList.remove("display_none");
+        } else {
+          document
+            .getElementById(`star_${i}-${j}`)
+            .classList.add("display_none");
+        }
+      }
+      document.getElementById(`user_score_${i}`).textContent =
+        rates[categories[i - 1]] + "/10";
+    }
   }
   document.getElementById("rate_buttons").classList.add("display_none");
+}
+
+// Вычисление цвета оценки
+function colorRating(rating) {
+  rating = parseFloat(rating);
+  if (rating === 0) {
+    rating = 0.1;
+  }
+  if (!rating) {
+    return "rgba(30, 180, 30, 0.8)";
+  }
+  let r, g, b;
+  if (rating <= 5) {
+    r = Math.round(100 + 6 * rating);
+    g = Math.round(10 + 18 * rating);
+    b = 0;
+  } else {
+    r = Math.round(130 - 26 * (rating - 5));
+    g = 100;
+    b = 0;
+  }
+  console.log("rgb:", r, g, b);
+  return `rgba(${r}, ${g}, ${b}, 0.8)`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

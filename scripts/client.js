@@ -18,11 +18,9 @@ async function profileContext() {
     }
   } else {
     if (isLogged) {
-      console.log(isLogged, isProfileContextVisible);
       document
         .getElementById("authorized_context_box")
         .classList.add("display_none");
-      console.log(document.getElementById("authorized_context_box").classList);
     } else {
       document
         .getElementById("guest_context_box")
@@ -168,7 +166,7 @@ async function showGame(gameID) {
         <label class="game_name">${gameName}</label>
         <label class="year">${gameYear}</label>
         <div class="rating">
-          <label class="rating_score">${rating}</label>
+          <label class="rating_score" style="color: ${colorRating(rating)}">${rating}</label>
           <label class="rating_quantity">${rating_q}</label>
         </div>
       </div>
@@ -197,12 +195,18 @@ async function filterGames({
   };
   const panels = document.getElementById("games_grid");
 
-  const response = await fetch(`/api/filter`, {
+  let userID = await userInfo();
+  if (!userID)
+    userID = 0; // Проверка на гостя
+  else userID = userID.id;
+  console.log(userID);
+  const response = await fetch(`/api/filter/${userID}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(filter),
+    credentials: "include",
   });
 
   panels.innerHTML = "";
@@ -261,14 +265,45 @@ async function search() {
   }
 }
 
+// Очистка фильтров поиска
 async function cancelSearch() {
   document.getElementById("search_bar").value = "";
   filterGames({});
 }
 
+// Вычисление цвета оценки
+function colorRating(rating) {
+  rating = parseFloat(rating);
+  if (rating === 0) {
+    rating = 0.1;
+  }
+  if (!rating) {
+    return "rgba(255, 255, 110, 0.9)";
+  }
+  let r, g, b;
+  if (rating <= 5) {
+    r = 255;
+    g = Math.round(80 + 35 * rating);
+    b = Math.round(80 + 6 * rating);
+  } else {
+    r = Math.round(255 - 29 * (rating - 5));
+    g = 255;
+    b = 110;
+  }
+  return `rgba(${r}, ${g}, ${b}, 0.9)`;
+}
+
 // Выполняется на загрузке страницы
 document.addEventListener("DOMContentLoaded", async () => {
   const searchBar = document.getElementById("search_bar");
+
+  searchBar.addEventListener("focus", function () {
+    document.getElementById("search_advice").classList.remove("display_none");
+  });
+  searchBar.addEventListener("blur", function () {
+    document.getElementById("search_advice").classList.add("display_none");
+  });
+
   searchBar.addEventListener("keypress", function (event) {
     if (event.key == "Enter") {
       event.preventDefault();

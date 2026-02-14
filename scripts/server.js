@@ -66,7 +66,7 @@ const upload = multer({
     }
   },
   limits: {
-    fileSize: 5 * 1024 * 1024, // ограничение 5MB
+    fileSize: 5 * 1024 * 1024, // 5MB
   },
 }).single("image");
 
@@ -247,18 +247,56 @@ app.get("/api/game/:id", async (req, res) => {
 });
 
 // Поиск игр по фильтрам
-app.post("/api/filter", async (req, res) => {
+app.post("/api/filter/:userID", async (req, res) => {
   try {
     const { title, date, dev, genre, unrated, order } = req.body;
-    let query = `
+    let query = ``;
+    const params = [];
+    const userID = req.params.userID;
+
+    if (userID !== 0) {
+      if (unrated === "0") {
+        query += `
+        SELECT
+          games.id
+          FROM games
+          WHERE games.id IN(
+            SELECT
+              rates.game_id
+              FROM rates
+              WHERE rates.user_id = ?
+          )
+        `;
+        params.push(userID);
+      } else if (unrated === "1") {
+        query += `
+        SELECT
+          games.id
+          FROM games
+          WHERE games.id NOT IN(
+            SELECT
+              rates.game_id
+              FROM rates
+              WHERE rates.user_id = ?
+          )
+        `;
+        params.push(userID);
+      } else {
+        query += `
+        SELECT
+          id
+          FROM games g
+          WHERE 1=1
+        `;
+      }
+    } else {
+      query += `
       SELECT
         id
-      FROM games g
-      WHERE 1=1
+        FROM games g
+        WHERE 1=1
       `;
-
-    const params = [];
-
+    }
     if (title) {
       params.push(`%${title}%`);
       query += ` AND g.title LIKE ?`;
@@ -279,7 +317,6 @@ app.post("/api/filter", async (req, res) => {
     if (order) {
       query += ` ORDER BY ${order}_score DESC`;
     }
-
     const filtered = await db.all(query, params);
     res.json(filtered);
   } catch (error) {
@@ -308,6 +345,7 @@ app.get("/api/get-user-rate/:gameid", requireAuth, async (req, res) => {
     if (!rate) return res.json(null);
     res.json(rate);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 });

@@ -21,6 +21,7 @@
 
 .info_main {
   background-color: rgba(187, 187, 187, 0.2);
+  width: 330px;
 }
 
 .info_title {
@@ -47,6 +48,7 @@
   width: auto;
   height: 100%;
   display: flex;
+  user-select: none;
 }
 
 .current_rating {
@@ -60,6 +62,7 @@
 .score {
   font-size: 50px;
   margin: 0;
+  margin-left: 10px;
 }
 
 .overall_star_clip{
@@ -76,6 +79,7 @@
 
 .overall_star_border {
   position: absolute;
+  filter: drop-shadow(0 0 7px rgba(245, 215, 0, 0.6));
 }
 
 .overall_star_container {
@@ -89,8 +93,11 @@
 }
 
 .overall_score {
+  position: relative;
   font-size: 70px;
   margin: 0;
+  margin-left: 16px;
+  bottom: 4px;
 }
 
 .rates_quantity {
@@ -112,6 +119,7 @@
 
 .star_border {
   position: absolute;
+  filter: drop-shadow(0 0 7px rgba(245, 215, 0, 0.6));
 }
 
 .star_container {
@@ -133,6 +141,7 @@
 
 .user_star:hover, .user_star_border:hover {
   filter: brightness(1.2);
+  filter: drop-shadow(0 0 7px rgba(245, 215, 0, 0.6));
 }
 
 .user_star_border {
@@ -172,12 +181,37 @@
 .desc {
   width: 30%;
   padding: 10px;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    
+    border-radius: 10px;
+    margin: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 10px;
+    border: 2px solid #777;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #bbb;
+    cursor:vertical-text;
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background: #ddd;
+  }
 }
 
 #last_rate {
   width: 500px;
   font-size: 18px;
-  margin-top: 50px;
+  margin-top: 90px;
 }
 
 .rating_title {
@@ -215,6 +249,64 @@
 
 .rate_buttons {
   position: absolute;
+  width: 100%;
+}
+
+.rate_buttons_inner {
+  display: flex;
+}
+
+.rate_button {
+  width: 30%;
+  height: 45px;
+  margin: auto; 
+  background: linear-gradient(135deg, #ccc, #999, #ccc);
+  border-radius: 12px;
+  font-family: Roboto;
+  font-size: 24px;
+  border-style: solid;
+  border-color: #ccc;
+  border-width: 3px;
+}
+
+.rate_button:hover {
+  background: linear-gradient(180deg, #ccc, #bbb);
+  border-color: #ddd;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+}
+.rate_button:active {
+  background: linear-gradient(135deg, #444, #555, #444);
+  border-color: #333;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+}
+
+.unrate_button {
+  width: 30%;
+  height: 45px;
+  margin: auto; 
+  margin-left: 30px;
+  background: linear-gradient(135deg, #e99, #e77, #e99);
+  border-radius: 12px;
+  font-family: Roboto;
+  font-size: 24px;
+  border-style: solid;
+  border-color: #e99;
+  border-width: 3px;
+}
+
+.unrate_button:hover {
+  background: linear-gradient(180deg, #e99, #e88);
+  border-color: #faa;
+  filter: drop-shadow(0 0 12px rgba(220, 130, 130, 0.5));
+}
+.unrate_button:active {
+  background: linear-gradient(135deg, #822, #933, #822);
+  border-color: #822;
+  filter: drop-shadow(0 0 12px rgba(220, 130, 130, 0.5));
+}
+
+.info_image {
+  user-select: none;
 }
 
 @keyframes starAppear {

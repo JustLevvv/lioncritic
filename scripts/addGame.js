@@ -35,7 +35,7 @@ document
   });
 
 // Форма создания игры
-async function createGame(formData) {
+async function createGame() {
   const response = await fetch("/api/create-game", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -60,9 +60,9 @@ async function createGame(formData) {
       body: imageFormData,
       credentials: "include",
     });
-
-    return await imageResponse.json();
   }
+
+  location.reload();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
