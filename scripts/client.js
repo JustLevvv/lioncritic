@@ -122,6 +122,16 @@ async function checkLogging() {
     document.getElementById("profile_text").textContent = user.username;
     document.getElementById("profile_number").textContent =
       user.rates_quantity + " ★";
+    const isModeratorR = await fetch("/api/is-moderator", {
+      credentials: "include",
+    });
+    if (isModeratorR.ok) {
+      const isModerator = await isModeratorR.json();
+      if (isModerator.is_moderator)
+        document
+          .getElementById("moderator_tools")
+          .classList.remove("display_none");
+    }
     return 1;
   } else {
     document.getElementById("profile_number").classList.add("display_none");
@@ -213,7 +223,7 @@ async function search() {
     dev: "",
     genre: "",
     unrated: "",
-    order: "",
+    order: "overall",
   };
   try {
     const date = text.match(/\bdate:(\S+)/i);

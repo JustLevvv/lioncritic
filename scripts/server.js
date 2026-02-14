@@ -3,6 +3,10 @@ import express from "express";
 import { openDB, initDB } from "./db.js";
 import cookieParser from "cookie-parser";
 import { requireAuth, requireGuest, login, logout, register } from "./auth.js";
+import multer from "multer";
+import { fileURLToPath } from "url";
+import path from "path";
+import fs from "fs";
 
 // Инициализация сервера
 const app = express();
@@ -25,10 +29,132 @@ const genres = [
   "sandbox",
 ];
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 let db;
 initDB().then((database) => {
   db = database;
   console.log("База данных инициализирована");
+});
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, "..", "game_previews");
+
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const gameID = req.params.game_id;
+    const ext = path.extname(file.originalname);
+
+    if (!gameID) {
+      return cb(new Error("ID игры не указан"));
+    }
+
+    cb(null, `${gameID}${ext}`);
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Ошибка: не изображение"));
+    }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024, // ограничение 5MB
+  },
+}).single("image");
+
+// Добавление новой игры
+app.post("/api/create-game", requireAuth, async (req, res) => {
+  try {
+    const { title, description, developer, genre, release_date } = req.body;
+
+    const user = await db.get(
+      `SELECT 
+        is_moderator 
+        FROM users 
+        WHERE id = ?`,
+      [req.user.id],
+    );
+    if (!user || !user.is_moderator) {
+      return res.status(403).json({ error: "Ошибка прав" });
+    }
+
+    const result = await db.run(
+      `INSERT INTO games 
+        (title, description, developer, genre, release_date) 
+        VALUES (?, ?, ?, ?, ?)
+        `,
+      [title, description, developer, genre, release_date],
+    );
+
+    const gameID = result.lastID;
+
+    res.json({
+      success: true,
+      gameID: gameID,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Отправка изображения на диск
+app.post("/api/send-image/:game_id", requireAuth, (req, res) => {
+  upload(req, res, async function (err) {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    try {
+      const gameID = req.params.game_id;
+
+      if (!req.file) {
+        console.log(2);
+        return res.status(400).json({ error: "Файл не загружен" });
+      }
+
+      const user = await db.get("SELECT is_moderator FROM users WHERE id = ?", [
+        req.user.id,
+      ]);
+
+      if (!user || !user.is_moderator) {
+        fs.unlinkSync(req.file.path);
+        return res.status(403).json({ error: "Недостаточно прав" });
+      }
+      const oldImagePath = path.join(__dirname, "..", "game_previews", gameID);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+        console.log(`Старое изображение удалено: ${oldImagePath}`);
+      }
+
+      const ext = path.extname(req.file.originalname);
+      const filename = `${gameID}${ext}`;
+      const imageUrl = `/game_previews/${filename}`;
+
+      console.log(`Изображение сохранено для игры ${gameID}: ${filename}`);
+
+      res.json({
+        message: "Изображение сохранено",
+        gameID: gameID,
+        imageUrl: imageUrl,
+        filename: filename,
+      });
+    } catch (error) {
+      if (req.file && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+
+      console.error("Ошибка при сохранении изображения", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
 });
 
 // Регистрация нового пользователя
@@ -84,6 +210,23 @@ app.get("/api/currentuser", requireAuth, async (req, res) => {
   }
 });
 
+// Проверка на модератора
+app.get("/api/is-moderator", requireAuth, async (req, res) => {
+  try {
+    const mod = await db.get(
+      `SELECT
+        is_moderator
+        FROM users
+        WHERE id = ?
+      `,
+      [req.user.id],
+    );
+    res.json(mod);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Получение информации об игре
 app.get("/api/game/:id", async (req, res) => {
   try {
@@ -134,8 +277,7 @@ app.post("/api/filter", async (req, res) => {
     }
 
     if (order) {
-      params.push(`g.${order}_score`);
-      query += ` ORDER BY ? DESC`;
+      query += ` ORDER BY ${order}_score DESC`;
     }
 
     const filtered = await db.all(query, params);
@@ -177,7 +319,7 @@ app.post("/api/send-rate/:gameid", requireAuth, async (req, res) => {
     const { gameplay, graphics, story, sound } = req.body;
     const userID = req.user.id;
     const TRUST_THRESHOLD = 10;
-    const WEIGHT = 20;
+    const WEIGHT = 10;
     const AVG_RATE = 6.5;
 
     const ratesQReq = await db.get(
@@ -276,13 +418,24 @@ app.post("/api/send-rate/:gameid", requireAuth, async (req, res) => {
     }
     overallScore /= 4;
     overallScore = Math.round(overallScore * 10) / 10;
+
+    const ratesSum = await db.get(
+      `
+      SELECT
+        COUNT(*) as count
+        FROM rates
+        WHERE game_id = ?
+      `,
+      [gameID],
+    );
+
     await db.run(
       `UPDATE games
         SET overall_score = ?,
-        overall_rates = overall_rates + 1
+        overall_rates = ?
         WHERE id = ?
       `,
-      [overallScore, gameID],
+      [overallScore, ratesSum.count, gameID],
     );
     res.json({ success: true, overallScore });
   } catch (error) {

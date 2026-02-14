@@ -1,0 +1,196 @@
+.profile_unclickable {
+  background-color: #222;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  right: 20px;
+  height: 90px;
+  width: 200px;
+  padding: 0;
+}
+
+.game_form {
+  margin: auto;
+  margin-top: 3vh;
+  width: 70vw;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(50, 50, 50, 0.7), rgba(80, 80, 80, 0.5));
+  border-radius: 40px;
+}
+
+.input_title {
+  position: relative;
+  margin: 0;
+  font-family: Roboto;
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 2px;
+  bottom: 1px;
+}
+
+.main_info {
+  margin: 20px;
+  display: flex;
+  background-color: rgba(100, 100, 100, 0.5);
+  padding: 10px;
+  padding-bottom: 16px;
+  border-radius: 14px;
+}
+
+.image_input_container {
+  background-color: rgba(100, 100, 100, 0.5);
+  padding: 10px 15px;
+  border-radius: 10px;
+  margin-left:auto;
+}
+
+#image_preview {
+  width: 330px;
+  height: 480px;
+  display: flex;
+  border-radius: 15px;
+  margin: 10px auto;
+  overflow: hidden;
+}
+
+
+.desc_container {
+  height: 40%;
+}
+
+.main_info_text {
+  width: 100%;
+  height: 100%;
+  margin-right: 30px;
+}
+
+.standard_input {
+  background-color: #444;
+  border-radius: 4px;
+  color: #ddd;
+  font-family: Roboto;
+  font-size: 20px;
+  padding: 2px;
+  border-style: solid;
+  border-color: #333;
+  border-width: 3px;
+  width: 50%;
+  margin-bottom: 10px;
+}
+
+#genre_input {
+  background-color: #444;
+  border-radius: 4px;
+  color: #ddd;
+  font-family: Roboto;
+  font-size: 20px;
+  padding: 2px;
+  border-style: solid;
+  border-color: #333;
+  border-width: 3px;
+  margin-bottom: 10px;
+}
+
+#date_input {
+  background-color: #444;
+  border-radius: 4px;
+  color: #ddd;
+  font-family: Roboto;
+  font-size: 20px;
+  padding: 2px;
+  border-style: solid;
+  border-color: #333;
+  border-width: 3px;
+  margin-bottom: 10px;
+}
+
+#desc_input {
+  width: 98%;
+  height: 100%;
+  border-radius: 16px;
+  padding: 8px 10px;
+  border-style: solid;
+  font-size: 15px;
+  font-family: Roboto;
+  color: #ddd;
+  background-color: #444;
+  border-color: #333;
+  border-width: 3px;
+  resize: none;
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #222;
+    border-radius: 10px;
+    margin: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+    border: 2px solid #222;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    cursor:vertical-text;
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background: #666;
+  }
+}
+
+#date_input::-webkit-calendar-picker-indicator {
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  filter: invert(1);
+}
+
+.create_game_button {
+  width: 60%;
+  height: 60px;
+  margin: auto; 
+  background: linear-gradient(135deg, #333, #555, #333);
+  border-radius: 14px;
+  color: #ddd;
+  font-family: Roboto;
+  font-size: 20px;
+  border-style: solid;
+  border-color: #333;
+  border-width: 3px;
+}
+
+
+.create_game_button:hover {
+  background: linear-gradient(135deg, #444, #555, #444);
+  border-color: #aaa;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+}
+.create_game_button:active {
+  background: linear-gradient(180deg, #ccc, #bbb);
+  border-color: #ddd;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+}
+
+.standard_input:hover, #genre_input:hover, #date_input:hover, #desc_input:hover {
+  background-color: #3f3f3f;
+}
+.standard_input:focus, #genre_input:focus, #date_input:focus, #desc_input:focus {
+  background-color: #3a3a3a;
+  outline: none;
+}
+
+#image_input {
+  border-color: #333;
+  border-style: solid;
+  border-width: 3px;
+  border-radius: 8px;
+  background-color: #444;
+  color: #ddd;
+}

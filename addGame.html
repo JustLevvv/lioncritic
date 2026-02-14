@@ -4,8 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lioncritic - Добавление игры</title>
+  <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="styles/circles.css">
+  <link rel="stylesheet" href="styles/index.css">
+  <link rel="stylesheet" href="styles/addGame.css">
 </head>
 <body>
-  
+  <div class="background">
+    <ul class="circles">
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+    </ul>
+  </div>
+  <header class="hat">
+    <div class="icon">
+      <a href="/index.html" class="home_link">
+        <img class="icon_image" src="favicon/android-chrome-192x192.png" width="64" height="64">
+        <h1 class="title">ioncritic</h1>
+      </a>
+    </div>
+    <div class="profile_unclickable">
+      <p id="profile_text" class="profile_text">Гость</p>
+      <p id="profile_number" class="profile_text"></p>
+      
+    </div>
+  </header>
+  <main>
+    <div class="game_form">
+      <div class="main_info">
+        <div class="main_info_text">
+          <p class="input_title">Название</p>
+          <input type="text" id="title_input" class="standard_input">
+          <p class="input_title">Разработчики</p>
+          <input type="text" id="dev_input" class="standard_input">
+          <p class="input_title">Жанр</p>
+          <select id="genre_input">
+            <option value="action">Action</option>
+            <option value="rpg">RPG</option>
+            <option value="adventure">Adventure</option>
+            <option value="platformer">Platformer</option>
+            <option value="strategy">Strategy</option>
+            <option value="simulation">Simulation</option>
+            <option value="puzzle">Puzzle</option>
+            <option value="survival">Survival</option>
+            <option value="horror">Horror</option>
+            <option value="sports">Sports</option>
+            <option value="mmo">MMO</option>
+            <option value="sandbox">Sandbox</option>
+          </select>
+          <p class="input_title">Дата релиза (раннего доступа)</p>
+          <input type="date" id="date_input">
+          
+          <div class="desc_container">
+            <p class="input_title">Описание</p>
+            <textarea id="desc_input"></textarea>
+          </div>
+        </div>
+        <div class="image_input_container">
+          <p class="input_title">Постер игры</p>
+          <div id="image_preview"></div>
+          <input type="file" name="image" accept="image/jpeg" id="image_input">
+        </div>
+      </div>
+      
+      <button onclick="createGame()" class="create_game_button">Создать игру!</button>
+    </div>
+  </main>
 </body>
+<script src="scripts/addGame.js"></script>
 </html>
