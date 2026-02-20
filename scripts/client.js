@@ -56,11 +56,12 @@ async function login() {
   });
   const data = await response.json();
   if (response.ok) {
-    alert("Вход!");
+    showNotification("Вы вошли в аккаунт", function (ok) {});
     await checkLogging();
     profileContext();
+    filterGames({});
   } else {
-    alert("Ошибка: " + data.error);
+    showNotification(`Ошибка: ${data.error}`, function (ok) {}, false, "error");
   }
 }
 
@@ -70,7 +71,13 @@ async function logout() {
     method: "POST",
   });
   if (response.ok) {
-    location.reload();
+    showNotification(
+      "Вы вышли из аккаунта",
+      function (ok) {
+        location.reload();
+      },
+      true,
+    );
   }
 }
 
@@ -101,7 +108,7 @@ async function register() {
   if (response.ok) {
     setLogin();
   } else {
-    alert("Ошибка: " + data.error);
+    showNotification(`Ошибка: ${data.error}`, function (ok) {}, false, "error");
   }
 }
 
@@ -129,6 +136,11 @@ async function checkLogging() {
         document
           .getElementById("moderator_tools")
           .classList.remove("display_none");
+      if (isModerator.is_moderator === 2) {
+        document
+          .getElementById("superadmin_tools")
+          .classList.remove("display_none");
+      }
     }
     return 1;
   } else {
@@ -151,15 +163,33 @@ async function showGame(gameID) {
   const data = await response.json();
   if (data.length === 0) return;
   const element = document.getElementById("games_grid");
-  const gameName = data[0].title;
+  let gameName = data[0].title;
   const gameYear = data[0].release_date.split("-")[0];
-  let rating = "" + (data[0].overall_score || 5.0);
+  let rating = "" + (data[0].overall_score || 6.5);
   if (rating.length == 1) rating += ".0";
   const rating_q = data[0].overall_rates;
+
+  const userRate = await fetch(`/api/get-user-rate/${gameID}`, {
+    credentials: "include",
+  });
+  let ratedMark = "";
+  if (userRate.ok) {
+    const userRateData = await userRate.json();
+    if (userRateData !== null) {
+      // console.log(userRate);
+      ratedMark = '<p class="rated_mark">Оценено</p>';
+    }
+  }
+
+  // if (gameName.length > 35) {
+  //   gameName = gameName.slice(0, 35) + "...";
+  // }
+
   const panel = `
   <a href="/game.html?${gameID}" class="panel_link">
     <div class="panel" id="${gameID}">
       <div class="game_image">
+        ${ratedMark}
         <img class="game_image_img" src="game_previews/${gameID}.jpg" title="game_${gameID}" width="280" height="400">
       </div>
       <div class="game_info">
@@ -199,7 +229,7 @@ async function filterGames({
   if (!userID)
     userID = 0; // Проверка на гостя
   else userID = userID.id;
-  console.log(userID);
+  // console.log(userID);
   const response = await fetch(`/api/filter/${userID}`, {
     method: "POST",
     headers: {
@@ -220,6 +250,7 @@ async function filterGames({
 // Поиск
 async function search() {
   const searchBar = document.getElementById("search_bar");
+  console.log(searchBar.value);
   let text = searchBar.value.trim();
   const filter = {
     title: "",
@@ -230,7 +261,7 @@ async function search() {
     order: "overall",
   };
   try {
-    const date = text.match(/\bdate:(\S+)/i);
+    const date = text.match(/(?<!\S)date:(\S+)/i);
     if (date) {
       filter.date = date[1];
       text = text.replace(date[0], "").trim();
@@ -252,6 +283,7 @@ async function search() {
       filter.unrated = unrated[1];
       text = text.replace(unrated[0], "").trim();
     }
+    console.log(text);
     const order = text.match(/\border:(\S+)/i);
     if (order) {
       console.log(order);
@@ -293,6 +325,44 @@ function colorRating(rating) {
   return `rgba(${r}, ${g}, ${b}, 0.9)`;
 }
 
+// Уведомление
+async function showNotification(message, action, block = false, type = "info") {
+  const element = document.getElementById("notification");
+  if (type === "error") {
+    element.style.backgroundColor = `#d88`;
+    console.log("color change");
+  } else {
+    element.style.backgroundColor = `#8d8`;
+  }
+  if (block) {
+    document.getElementById("block").classList.remove("display_none");
+  }
+  element.classList.remove("display_none");
+  document.getElementById("notification_text").textContent = message;
+
+  function onEnter(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      action(true);
+      element.classList.add("display_none");
+      document.getElementById("block").classList.add("display_none");
+      document.removeEventListener("keydown", onEnter);
+    }
+  }
+
+  document.addEventListener("keydown", onEnter);
+
+  document.getElementById("notification_button").addEventListener(
+    "click",
+    function () {
+      action(true);
+      element.classList.add("display_none");
+      document.getElementById("block").classList.add("display_none");
+    },
+    { once: true },
+  );
+}
+
 // Выполняется на загрузке страницы
 document.addEventListener("DOMContentLoaded", async () => {
   const searchBar = document.getElementById("search_bar");
@@ -319,6 +389,52 @@ document.addEventListener("DOMContentLoaded", async () => {
       searchBar.disabled = false;
     }
   });
+
+  // Обработка Enter'ов
+  const loginUsername = document.getElementById("login_username");
+  const loginPassword = document.getElementById("login_password");
+  const registerUsername = document.getElementById("register_username");
+  const registerPassword = document.getElementById("register_password");
+  const registerPasswordRepeat = document.getElementById(
+    "register_password_repeat",
+  );
+  const registerEmail = document.getElementById("register_email");
+
+  loginUsername.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      loginPassword.focus();
+    }
+  });
+  loginPassword.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      login();
+      loginPassword.blur();
+    }
+  });
+
+  registerUsername.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      registerPassword.focus();
+    }
+  });
+  registerPassword.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      registerPasswordRepeat.focus();
+    }
+  });
+  registerPasswordRepeat.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      registerEmail.focus();
+    }
+  });
+  registerEmail.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      registerEmail.blur();
+      register();
+    }
+  });
+
+  // Предзагрузка данных
   checkLogging();
   profileContext();
 

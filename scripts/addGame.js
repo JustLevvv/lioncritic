@@ -1,5 +1,7 @@
 "use strict";
 
+let createdGameID = 1;
+
 // Проверка входа
 async function checkLogging() {
   const response = await fetch("/api/currentuser", {
@@ -49,20 +51,25 @@ async function createGame() {
     credentials: "include",
   });
   const result = await response.json();
+  createdGameID = result.gameID;
 
   if (result.success) {
     const imageFormData = new FormData();
     const imageFile = document.getElementById("image_input").files[0];
     imageFormData.append("image", imageFile);
     console.log(imageFile);
-    const imageResponse = await fetch(`/api/send-image/${result.gameID}`, {
+    const imageResponse = await fetch(`/api/send-image/${createdGameID}`, {
       method: "POST",
       body: imageFormData,
       credentials: "include",
     });
   }
 
-  location.reload();
+  document.getElementById("block").classList.remove("display_none");
+}
+
+function hrefGame() {
+  location.href = `game.html?${createdGameID}`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

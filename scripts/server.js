@@ -116,7 +116,6 @@ app.post("/api/send-image/:game_id", requireAuth, (req, res) => {
       const gameID = req.params.game_id;
 
       if (!req.file) {
-        console.log(2);
         return res.status(400).json({ error: "Файл не загружен" });
       }
 
@@ -131,14 +130,14 @@ app.post("/api/send-image/:game_id", requireAuth, (req, res) => {
       const oldImagePath = path.join(__dirname, "..", "game_previews", gameID);
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
-        console.log(`Старое изображение удалено: ${oldImagePath}`);
+        //console.log(`Старое изображение удалено: ${oldImagePath}`);
       }
 
       const ext = path.extname(req.file.originalname);
       const filename = `${gameID}${ext}`;
       const imageUrl = `/game_previews/${filename}`;
 
-      console.log(`Изображение сохранено для игры ${gameID}: ${filename}`);
+      //console.log(`Изображение сохранено для игры ${gameID}: ${filename}`);
 
       res.json({
         message: "Изображение сохранено",
@@ -258,9 +257,9 @@ app.post("/api/filter/:userID", async (req, res) => {
       if (unrated === "0") {
         query += `
         SELECT
-          games.id
-          FROM games
-          WHERE games.id IN(
+          g.id
+          FROM games g
+          WHERE g.id IN(
             SELECT
               rates.game_id
               FROM rates
@@ -271,9 +270,9 @@ app.post("/api/filter/:userID", async (req, res) => {
       } else if (unrated === "1") {
         query += `
         SELECT
-          games.id
-          FROM games
-          WHERE games.id NOT IN(
+          g.id
+          FROM games g
+          WHERE g.id NOT IN(
             SELECT
               rates.game_id
               FROM rates
@@ -315,8 +314,14 @@ app.post("/api/filter/:userID", async (req, res) => {
     }
 
     if (order) {
-      query += ` ORDER BY ${order}_score DESC`;
+      const [orderP, asc = "desc"] = order.split(":");
+      if (orderP === "date") {
+        query += ` ORDER BY release_date`;
+      } else query += ` ORDER BY ${orderP}_score`;
+      if (asc.toLowerCase() === "asc") query += ` ASC`;
+      else query += ` DESC`;
     }
+    //console.log(query, "\nparams: ", params);
     const filtered = await db.all(query, params);
     res.json(filtered);
   } catch (error) {
@@ -357,7 +362,7 @@ app.post("/api/send-rate/:gameid", requireAuth, async (req, res) => {
     const { gameplay, graphics, story, sound } = req.body;
     const userID = req.user.id;
     const TRUST_THRESHOLD = 10;
-    const WEIGHT = 10;
+    const WEIGHT = 6;
     const AVG_RATE = 6.5;
 
     const ratesQReq = await db.get(
@@ -481,6 +486,74 @@ app.post("/api/send-rate/:gameid", requireAuth, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Удаление игр
+app.get("/api/delete-game/:gameid", requireAuth, async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const gameID = req.params.gameid;
+    const response = await isModerator(userID);
+    if (response.is_moderator >= 1) {
+      await db.run(
+        `DELETE
+        FROM games
+        WHERE id = ?`,
+        [gameID],
+      );
+      res.json({ success: true });
+    } else {
+      res.status(403).json({ error: "Недостаточно прав" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/api/update-game/:gameid", requireAuth, async (req, res) => {
+  try {
+    const gameID = req.params.gameid;
+    const userID = req.user.id;
+    const { title, description, developer, genre, date } = req.body;
+    const response = await isModerator(userID);
+    if (response.is_moderator >= 1) {
+      await db.run(
+        `UPDATE games
+          SET 
+          title = ?,
+          description = ?,
+          developer = ?,
+          genre = ?,
+          release_date = ?
+          WHERE id = ?
+        `,
+        [title, description, developer, genre, date, gameID],
+      );
+      res.json({ success: true });
+    } else {
+      res.status(403).json({ error: "Недостаточно прав" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+async function isModerator(userID) {
+  try {
+    const mod = await db.get(
+      `SELECT
+        is_moderator
+        FROM users
+        WHERE id = ?
+      `,
+      [userID],
+    );
+    return mod;
+  } catch (error) {
+    return -1;
+  }
+}
 
 // Запуск сервера
 app.listen(port, () => {

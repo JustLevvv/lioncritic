@@ -50,6 +50,18 @@ async function showGameFull(gameID) {
   const soundScore = data[0].sound_score;
   console.log(data[0]);
 
+  // Кнопки модератора
+  const isModeratorR = await fetch("/api/is-moderator", {
+    credentials: "include",
+  });
+  if (isModeratorR.ok) {
+    const isModerator = await isModeratorR.json();
+    if (isModerator.is_moderator) {
+      document.getElementById("edit_button").classList.remove("display_none");
+      document.getElementById("delete_button").classList.remove("display_none");
+    }
+  }
+
   // Заполняем данные
   document.getElementById("game_title").textContent = title;
 
@@ -69,7 +81,8 @@ async function showGameFull(gameID) {
   // document.getElementById("overall_score").style.color =
   //   colorRating(overallScore);
   if (overallRates)
-    document.getElementById("overall_rates").textContent = overallRates;
+    document.getElementById("overall_rates").textContent =
+      "Оценок: " + overallRates;
   // document.getElementById("overall_score").style.color =
   //   colorRating(overallScore);
   if (gameplayScore)
@@ -265,6 +278,101 @@ async function cancelRate() {
     }
   }
   document.getElementById("rate_buttons").classList.add("display_none");
+}
+
+//Удаление игры
+async function deleteGame() {
+  const gameID = window.location.search.substring(1);
+  const response = await fetch(`/api/delete-game/${gameID}`, {
+    credentials: "include",
+  });
+  if (response.ok) {
+    console.log("sss");
+    document.getElementById("suggestion").classList.add("display_none");
+    document
+      .getElementById("suggestion_response")
+      .classList.remove("display_none");
+  } else console.log("Ошибка удаления игры");
+}
+
+// Редактирование игры
+async function editGame() {
+  const editButton = document.getElementById("edit_button");
+  editButton.textContent = "Подтвердить редактирование";
+  editButton.onclick = editGameConfirm;
+  document
+    .getElementById("edit_cancel_button")
+    .classList.remove("display_none");
+
+  const titleElement = document.getElementById("game_title");
+  const descriptionElement = document.getElementById("description");
+  const developerElement = document.getElementById("dev");
+  const genreElement = document.getElementById("genre");
+  const dateElement = document.getElementById("date");
+
+  const title = titleElement.textContent;
+  const description = descriptionElement.textContent;
+  const developer = developerElement.textContent;
+  const genre = genreElement.textContent;
+  const date = dateElement.textContent;
+
+  titleElement.classList.add("display_none");
+  descriptionElement.classList.add("display_none");
+  developerElement.classList.add("display_none");
+  genreElement.classList.add("display_none");
+  dateElement.classList.add("display_none");
+
+  const titleInput = document.getElementById("title_input");
+  const descriptionInput = document.getElementById("desc_input");
+  const developerInput = document.getElementById("dev_input");
+  const genreInput = document.getElementById("genre_input");
+  const dateInput = document.getElementById("date_input");
+
+  titleInput.value = title;
+  descriptionInput.value = description;
+  developerInput.value = developer;
+  genreInput.value = genre;
+  dateInput.value = date;
+
+  titleInput.classList.remove("display_none");
+  descriptionInput.classList.remove("display_none");
+  developerInput.classList.remove("display_none");
+  genreInput.classList.remove("display_none");
+  dateInput.classList.remove("display_none");
+}
+
+// Подтверждение редактирования игры
+async function editGameConfirm() {
+  const gameID = window.location.search.substring(1);
+  const editButton = document.getElementById("edit_button");
+  const isModeratorR = await fetch("/api/is-moderator", {
+    credentials: "include",
+  });
+  if (isModeratorR.ok) {
+    const isModerator = await isModeratorR.json();
+    if (isModerator.is_moderator) {
+      const editDetails = {
+        title: document.getElementById("title_input").value,
+        description: document.getElementById("desc_input").value,
+        developer: document.getElementById("dev_input").value,
+        genre: document.getElementById("genre_input").value,
+        date: document.getElementById("date_input").value,
+      };
+
+      const response = await fetch(`/api/update-game/${gameID}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(editDetails),
+      });
+    }
+  }
+  location.reload();
+  // editButton.textContent = "Редактировать";
+  // editButton.onclick = editGame;
+  // document.getElementById("edit_cancel_button").classList.add("display_none");
 }
 
 // Вычисление цвета оценки

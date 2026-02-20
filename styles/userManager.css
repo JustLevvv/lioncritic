@@ -1,0 +1,10 @@
+.profile_unclickable {
+  background-color: #222;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  right: 20px;
+  height: 90px;
+  width: 200px;
+  padding: 0;
+}

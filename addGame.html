@@ -32,13 +32,22 @@
     </div>
   </header>
   <main>
+    <div class="block display_none" id="block">
+      <div class="suggestion">
+        <p class="suggestion_text">Игра успешно создана!</p>
+        <button class="suggestion_button" onclick="location.reload()">✦ - Создать ещё одну игру</button>
+        <button class="suggestion_button" onclick="hrefGame()">➤ - Перейти на страницу игры</button>
+        <button class="suggestion_button" onclick="location.href='index.html'">🏠︎ - Вернуться на главную страницу</button>
+      </div>
+    </div>
+    <button class="back_button" onclick="location.href='index.html'">Вернуться</button>
     <div class="game_form">
       <div class="main_info">
         <div class="main_info_text">
           <p class="input_title">Название</p>
-          <input type="text" id="title_input" class="standard_input">
+          <input type="text" id="title_input" class="standard_input" spellcheck="false">
           <p class="input_title">Разработчики</p>
-          <input type="text" id="dev_input" class="standard_input">
+          <input type="text" id="dev_input" class="standard_input" spellcheck="false">
           <p class="input_title">Жанр</p>
           <select id="genre_input">
             <option value="action">Action</option>
@@ -55,17 +64,17 @@
             <option value="sandbox">Sandbox</option>
           </select>
           <p class="input_title">Дата релиза (раннего доступа)</p>
-          <input type="date" id="date_input">
+          <input type="date" id="date_input" spellcheck="false">
           
           <div class="desc_container">
             <p class="input_title">Описание</p>
-            <textarea id="desc_input"></textarea>
+            <textarea id="desc_input" spellcheck="false"></textarea>
           </div>
         </div>
         <div class="image_input_container">
           <p class="input_title">Постер игры</p>
           <div id="image_preview"></div>
-          <input type="file" name="image" accept="image/jpeg" id="image_input">
+          <input type="file" name="image" accept="image/jpeg" id="image_input" spellcheck="false">
         </div>
       </div>
       

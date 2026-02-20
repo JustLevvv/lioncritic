@@ -17,6 +17,10 @@
   border-radius: 40px;
   display: flex;
   overflow: hidden;
+  &::selection {
+    color: #ddd;
+    background-color: #444;
+  }
 }
 
 .info_main {
@@ -178,6 +182,18 @@
   font-weight: bold;
 }
 
+#description {
+  width: 100%;
+  display: -webkit-box;
+  font-family: Roboto;
+  white-space: pre-wrap; 
+  word-wrap: break-word;
+}
+
+#description.display_none {
+  display: none;
+}
+
 .desc {
   width: 30%;
   padding: 10px;
@@ -308,6 +324,122 @@
 .info_image {
   user-select: none;
 }
+
+.context_buttons {
+  position: absolute;
+  margin: 0;
+  margin-top: 8px;
+  margin-left: 7vw;
+  display: flex;
+  gap: 10px;
+}
+
+.context_button {
+  height: 32px;
+  border-color: #222;
+  border-width: 2px;
+  border-style: solid;
+  background-color: #333;
+  padding: 0 6px;
+  font-family: Roboto;
+  font-size: 16px;
+  cursor: pointer;
+  color: #aaa;
+  user-select: none;
+}
+
+
+.context_button:hover {
+  background-color: #444;
+}
+
+.context_button:active {
+  background-color: #555;
+}
+
+.standard_input {
+  background-color: #ccc;
+  border-radius: 4px;
+  font-family: Roboto;
+  font-size: 20px;
+  padding: 2px;
+  border-style: solid;
+  border-color: #333;
+  border-width: 3px;
+  width: 50%;
+  margin-bottom: 10px;
+}
+
+#genre_input {
+  background-color: #ccc;
+  border-radius: 4px;
+  font-family: Roboto;
+  font-size: 20px;
+  padding: 2px;
+  border-style: solid;
+  border-color: #bbb;
+  border-width: 3px;
+  margin-bottom: 10px;
+}
+
+#date_input {
+  background-color: #ccc;
+  border-radius: 4px;
+  font-family: Roboto;
+  font-size: 20px;
+  padding: 2px;
+  border-style: solid;
+  border-color: #333;
+  border-width: 3px;
+  margin-bottom: 10px;
+}
+
+#desc_input {
+  width: 98%;
+  height: 100%;
+  border-radius: 16px;
+  padding: 8px 10px;
+  border-style: solid;
+  font-size: 15px;
+  font-family: Roboto;
+  color: #ddd;
+  background-color: #444;
+  border-color: #333;
+  border-width: 3px;
+  resize: none;
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #222;
+    border-radius: 10px;
+    margin: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+    border: 2px solid #222;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    cursor:vertical-text;
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background: #666;
+  }
+}
+
+#date_input::-webkit-calendar-picker-indicator {
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  filter: invert(1);
+}
+
 
 @keyframes starAppear {
   0% {

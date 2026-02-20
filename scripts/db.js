@@ -19,7 +19,7 @@ export async function initDB() {
       username TEXT NOT NULL UNIQUE,
       password_hash TEXT NOT NULL,
       rates_quantity INTEGER NOT NULL DEFAULT 0,
-      is_moderator INTEGER NOT NULL DEFAULT 0 CHECK (is_moderator IN (0, 1)),
+      is_moderator INTEGER NOT NULL DEFAULT 0 CHECK (is_moderator IN (0, 1, 2)),
       email TEXT UNIQUE,
       creation_date TEXT DEFAULT (datetime('now')) -- YYYY-MM-DD
     )  

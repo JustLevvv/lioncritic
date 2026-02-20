@@ -9,6 +9,7 @@
   <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
 </head>
 <body>
+  <div class="block display_none" id="block"></div>
   <div class="background">
     <ul class="circles">
       <li></li><li></li><li></li><li></li><li></li>
@@ -36,11 +37,16 @@
   <main class="main">
     <div id="search_advice" class="search_advice display_none">
       <p class="search_advice_text">Используйте ключи через пробел:</p>
-      <p class="search_advice_text">dev: genre: date:гггг-мм-дд unrated:1/0 order:gameplay/graphics/story/sound</p>
+      <p class="search_advice_text">dev: genre: date:гггг-мм-дд unrated:1/0 order:gameplay/graphics/story/sound/date</p>
     </div>
     <div class="moderator_tools display_none" id="moderator_tools">
       <p class="you_mod">Вы модератор</p>
       <button class="add_game_button" onclick="location.href='addGame.html'">Добавить игру</button>
+      <button class="add_game_button">Удалить игры</button>
+      <div class="superadmin_tools display_none" id="superadmin_tools">
+        <p class="you_mod">Вы суперадмин</p>
+        <button class="user_manager_button" onclick="location.href='userManager.html'">Менеджер пользователей</button>
+      </div>
     </div>
     <div class="guest_context_box display_none" id="guest_context_box">
       <input type="text" id="login_username" class="profile_context_bar" placeholder="Логин" spellcheck="false">
@@ -57,6 +63,7 @@
       <button onclick="setLogin()" class="profile_context_bar">Отмена</button>
     </div>
     <div class="authorized_context_box display_none" id="authorized_context_box">
+      <button onclick="location.href='profile.html'" class="profile_context_bar">Профиль</button>
       <button onclick="logout()" class="profile_context_bar">Выйти из аккаунта</button>
     </div>
     
@@ -64,8 +71,9 @@
       
     </div>
   </main>
-  <div class="notification display_none">
-    <p>Уведомление!</p>
+  <div class="notification display_none" id="notification">
+    <p id="notification_text">Уведомление!</p>
+    <button id="notification_button" class="notification_button">OK</button>
   </div>
 
 

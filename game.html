@@ -19,27 +19,66 @@
     </ul>
   </div>
   <main class="main">
+    <div class="context_buttons">
+      <button class="context_button" onclick="location.href='index.html'">Вернуться</button>
+      <button class="context_button display_none" id="edit_button" onclick=editGame()>Редактировать</button>
+      <button class="context_button display_none" id="edit_cancel_button" onclick="location.reload()">Отмена</button>
+      <button class="context_button display_none" id="delete_button" onclick="document.getElementById('block').classList.remove('display_none')">Удалить</button>
+    </div>
+    <div class="block display_none" id="block">
+      <div id="suggestion">
+        <div class="suggestion">
+          <p class="suggestion_text">Вы уверены, что хотите удалить эту игру?</p>
+          <button class="suggestion_button" onclick="deleteGame()">✔ - Удалить</button>
+          <button class="suggestion_button" onclick="document.getElementById('block').classList.add('display_none')">✖ - Отмена</button>
+        </div>
+      </div>
+      <div id="suggestion_response" class="display_none">
+        <div class="suggestion">
+          <p class="suggestion_text">Вы удалили эту игру</p>
+          <button class="suggestion_button" onclick="location.href='index.html'">🏠︎ - Назад</button>
+        </div>
+      </div>
+    </div>
     <div class="info_background" id="main_div">
       <div class="info_main">
         <div class="info_image" id="info_image"></div>
         <div class="tags">
           <p id="game_title"></p>
+          <input type="text" id="title_input" class="standard_input display_none" spellcheck="false">
           <div class="game_feature">
             <p class="info_title">Разработчик:</p>
             <p id="dev" class="info_text">Разработчик не найден</p>
+            <input type="text" id="dev_input" class="standard_input display_none" spellcheck="false">
           </div>
           <div class="game_feature">
             <p class="info_title">Жанр:</p>
             <p id="genre" class="info_text">Жанр не найден</p>
+            <select id="genre_input" class="display_none">
+              <option value="action">Action</option>
+              <option value="rpg">RPG</option>
+              <option value="adventure">Adventure</option>
+              <option value="platformer">Platformer</option>
+              <option value="strategy">Strategy</option>
+              <option value="simulation">Simulation</option>
+              <option value="puzzle">Puzzle</option>
+              <option value="survival">Survival</option>
+              <option value="horror">Horror</option>
+              <option value="sports">Sports</option>
+              <option value="mmo">MMO</option>
+              <option value="sandbox">Sandbox</option>
+            </select>
           </div>
           <div class="game_feature">
             <p class="info_title">Дата выхода:</p>
             <p id="date" class="info_text">yyyy-MM-dd</p>
+            <input type="date" id="date_input" spellcheck="false" class="display_none">
           </div>
         </div>
       </div>
       <div class="desc">
-        <p id="description">Описание к игре не найдено.</p>
+        <pre id="description">Описание к игре не найдено.</pre>
+        <textarea id="desc_input" spellcheck="false" class="display_none"></textarea>
       </div>
       
       <div class="rating_container">
@@ -55,7 +94,7 @@
                 <img class="star" id="star_gameplay" src="other_images/star.svg" width="60" height="60">
               </div>
             </div>
-            <p class="score" id="gameplay_score">5.0</p>
+            <p class="score" id="gameplay_score">6.5</p>
           </div>
 
           <p class="rating_type">Графика и визуал</p>
@@ -66,7 +105,7 @@
                 <img class="star" id="star_graphics" src="other_images/star.svg" width="60" height="60">
               </div>
             </div>
-            <p class="score" id="graphics_score">5.0</p>
+            <p class="score" id="graphics_score">6.5</p>
           </div>
 
           <p class="rating_type">Сюжет и лор</p>
@@ -77,7 +116,7 @@
                 <img class="star" id="star_story" src="other_images/star.svg" width="60" height="60">
               </div>
             </div>
-            <p class="score" id="story_score">5.0</p>
+            <p class="score" id="story_score">6.5</p>
           </div>
 
           <p class="rating_type">Звуки и саундтрек</p>
@@ -88,7 +127,7 @@
                 <img class="star" id="star_sound" src="other_images/star.svg" width="60" height="60">
               </div>
             </div>
-            <p class="score" id="sound_score">5.0</p>
+            <p class="score" id="sound_score">6.5</p>
           </div>
 
           <p class="overall_type">Общий</p>
@@ -101,8 +140,8 @@
               </div>
             </div>
             <div class="overall_score_numbers">
-              <p class="overall_score" id="overall_score">5.0</p>
-              <p class="rates_quantity" id="overall_rates">0</p>
+              <p class="overall_score" id="overall_score">6.5</p>
+              <p class="rates_quantity" id="overall_rates">Оценок: 0</p>
             </div>
           </div>
 
