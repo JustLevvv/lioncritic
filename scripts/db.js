@@ -11,6 +11,7 @@ let db;
 // Создание таблиц и ввод тестовых данных
 export async function initDB() {
   db = await openDB("./lioncritic.db");
+  db.run("PRAGMA foreign_keys = ON"); // Для работы каскадов
 
   // Таблица пользователей
   await db.exec(`

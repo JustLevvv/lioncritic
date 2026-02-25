@@ -34,7 +34,23 @@
       
     </div>
   </header>
-  
+  <main>
+    <div class="manager">
+      <div class="user_search_bar">
+        
+        <input type="text" id="search_bar" class="search_bar" placeholder="Поиск" spellcheck="false">
+        <img src="other_images/cross.svg" class="img_cancel_search_button" onclick="cancelSearch()" width="40">
+        <img src="other_images/magnifier.svg" class="img_search_button" onclick="search()" width="40">
+      </div>
+      <div class="manager_main">
+        <div class="user_list" id="user_list">
+          
+        </div>
+      </div>
+    </div>
+  </main>
+
+
   <script src="scripts/userManager.js"></script>
   
 </body>

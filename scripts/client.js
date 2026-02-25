@@ -1,6 +1,7 @@
 "use strict";
 
 let isProfileContextVisible = 1;
+let isMenuOpened = 0;
 
 // Скрытие контекст бокса профиля
 async function profileContext() {
@@ -35,6 +36,7 @@ async function profileContext() {
 async function setLogin() {
   document.getElementById("register_context_box").classList.add("display_none");
   document.getElementById("guest_context_box").classList.remove("display_none");
+  document.getElementById("login_username").focus();
 }
 
 async function setRegister() {
@@ -363,30 +365,46 @@ async function showNotification(message, action, block = false, type = "info") {
   );
 }
 
+async function goUp() {
+  document.getElementById("games_grid").scrollTop = 0;
+}
+
+async function menu() {
+  const button = document.getElementById("menu_button");
+  const div = document.getElementById("menu");
+  if (!isMenuOpened) {
+    button.textContent = "Меню ▼ ";
+    div.classList.remove("display_none");
+  } else {
+    button.textContent = "Меню ◀ ";
+    div.classList.add("display_none");
+  }
+  isMenuOpened = 1 - isMenuOpened;
+}
+
 // Выполняется на загрузке страницы
 document.addEventListener("DOMContentLoaded", async () => {
   const searchBar = document.getElementById("search_bar");
 
-  searchBar.addEventListener("focus", function () {
+  searchBar.addEventListener("focus", () => {
     document.getElementById("search_advice").classList.remove("display_none");
   });
-  searchBar.addEventListener("blur", function () {
+  searchBar.addEventListener("blur", () => {
     document.getElementById("search_advice").classList.add("display_none");
   });
 
-  searchBar.addEventListener("keypress", function (event) {
+  searchBar.addEventListener("keypress", (event) => {
     if (event.key == "Enter") {
       event.preventDefault();
       search();
     }
   });
-  searchBar.addEventListener("keydown", function (event) {
+  searchBar.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       event.preventDefault();
       filterGames({});
       searchBar.value = "";
-      searchBar.disabled = true;
-      searchBar.disabled = false;
+      searchBar.blur();
     }
   });
 
@@ -400,37 +418,49 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
   const registerEmail = document.getElementById("register_email");
 
-  loginUsername.addEventListener("keydown", function (event) {
+  loginUsername.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       loginPassword.focus();
     }
   });
-  loginPassword.addEventListener("keydown", function (event) {
+  loginPassword.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       login();
       loginPassword.blur();
     }
   });
 
-  registerUsername.addEventListener("keydown", function (event) {
+  registerUsername.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       registerPassword.focus();
     }
   });
-  registerPassword.addEventListener("keydown", function (event) {
+  registerPassword.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       registerPasswordRepeat.focus();
     }
   });
-  registerPasswordRepeat.addEventListener("keydown", function (event) {
+  registerPasswordRepeat.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       registerEmail.focus();
     }
   });
-  registerEmail.addEventListener("keydown", function (event) {
+  registerEmail.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       registerEmail.blur();
       register();
+    }
+  });
+
+  const mainElement = document.getElementById("main");
+  const gamesGrid = document.getElementById("games_grid");
+  const goUpButton = document.getElementById("go_up_button");
+
+  gamesGrid.addEventListener("scroll", (event) => {
+    if (gamesGrid.scrollTop === 0) {
+      goUpButton.classList.add("display_none");
+    } else {
+      goUpButton.classList.remove("display_none");
     }
   });
 

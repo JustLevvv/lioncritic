@@ -7,6 +7,7 @@ import multer from "multer";
 import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
+import bcrypt from "bcryptjs";
 
 // Инициализация сервера
 const app = express();
@@ -27,6 +28,7 @@ const genres = [
   "sports",
   "mmo",
   "sandbox",
+  "casual",
 ];
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +40,7 @@ initDB().then((database) => {
   console.log("База данных инициализирована");
 });
 
+// Инициализация работы с изображениями
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadDir = path.join(__dirname, "..", "game_previews");
@@ -46,7 +49,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const gameID = req.params.game_id;
-    const ext = path.extname(file.originalname);
+    const ext = ".jpg";
 
     if (!gameID) {
       return cb(new Error("ID игры не указан"));
@@ -56,6 +59,7 @@ const storage = multer.diskStorage({
   },
 });
 
+// mw выгрузки изображения
 const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
@@ -154,6 +158,34 @@ app.post("/api/send-image/:game_id", requireAuth, (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
+});
+
+// Удаление картинки
+app.get("/api/delete-image/:gameid", requireAuth, async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const gameID = req.params.gameid;
+    const response = await isModerator(userID);
+    if (response.is_moderator >= 1) {
+      const imageDir = path.join(__dirname, "..", "game_previews");
+      const files = fs.readdirSync(imageDir);
+      const image = files.find((file) => file.startsWith(gameID + "."));
+
+      if (!image) {
+        res.status(404).json({ error: "Изображение не найдено" });
+        return 0;
+      }
+
+      const imagePath = path.join(imageDir, image);
+
+      fs.unlinkSync(imagePath);
+    } else {
+      res.status(403).json({ error: "Недостаточно прав" });
+    }
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Регистрация нового пользователя
@@ -539,6 +571,173 @@ app.post("/api/update-game/:gameid", requireAuth, async (req, res) => {
   }
 });
 
+app.post("/api/update-user", requireAuth, async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const { username, email } = req.body;
+
+    if (username.length > 3) {
+      const existingUser = await db.get(
+        `SELECT 
+          id 
+          FROM users 
+          WHERE username = ? 
+          OR email = ?
+          `,
+        [username, email],
+      );
+
+      if (existingUser.id !== userID) {
+        return res
+          .status(400)
+          .json({ error: "Пользователь с такими данными уже существует" });
+      } else {
+        await db.run(
+          `UPDATE users
+          SET 
+          username = ?,
+          email = ?
+          WHERE id = ?
+        `,
+          [username, email, userID],
+        );
+        return res.json({ success: true });
+      }
+    } else {
+      return res
+        .status(400)
+        .json({ error: "Username должен быть длиннее 3 символов" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Удаление пользователя
+app.post("/api/delete-user", requireAuth, async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const { password } = req.body;
+
+    const user = await db.get(
+      `SELECT
+        password_hash
+        FROM users
+        WHERE id = ?
+      `,
+      [userID],
+    );
+
+    const isValid = await bcrypt.compare(password, user.password_hash);
+
+    if (isValid) {
+      await db.run(
+        `DELETE
+        FROM users
+        WHERE id = ?`,
+        [userID],
+      );
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ error: "Ошибка доступа" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Смена пароля
+app.post("/api/change-password", requireAuth, async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const { password, passwordNew } = req.body;
+
+    if (passwordNew.length < 6) {
+      return res
+        .status(400)
+        .json({ error: "Длина пароля должна быть от 6 символов" });
+    }
+
+    const user = await db.get(
+      `SELECT
+        password_hash
+        FROM users
+        WHERE id = ?
+      `,
+      [userID],
+    );
+
+    const isValid = await bcrypt.compare(password, user.password_hash);
+
+    if (isValid) {
+      const newPasswordHash = await bcrypt.hash(passwordNew, 9);
+      await db.run(
+        `UPDATE users
+          SET 
+          password_hash = ?
+          WHERE id = ?`,
+        [newPasswordHash, userID],
+      );
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ error: "Ошибка доступа" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/api/user-list", requireAuth, async (req, res) => {
+  try {
+    const { filter } = req.body;
+    let query = ``;
+    const params = [];
+    const userID = req.user.id;
+    query += `SELECT
+        *
+        FROM users
+        WHERE id != ?`;
+    params.push(userID);
+    if (filter) {
+      query += ` AND username LIKE ?`;
+      params.push(`%${filter}%`);
+    }
+    query += ` ORDER BY is_moderator DESC`;
+    const users = await db.all(query, params);
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/api/set-moderator/:userid", requireAuth, async (req, res) => {
+  try {
+    const targetID = req.params.userid;
+    const userID = req.user.id;
+    const response = await isModerator(userID);
+    if (response.is_moderator === 2) {
+      await db.run(
+        `
+        UPDATE users
+        SET is_moderator = 1 - is_moderator
+        WHERE id = ? AND is_moderator != 2
+        `,
+        [targetID],
+      );
+      res.json({ success: true });
+    } else {
+      res.status(403).json({ error: "Недостаточно прав" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 async function isModerator(userID) {
   try {
     const mod = await db.get(
@@ -554,6 +753,56 @@ async function isModerator(userID) {
     return -1;
   }
 }
+
+// Удаление пользователя по id
+app.post("/api/delete-user/:userid", requireAuth, async (req, res) => {
+  try {
+    const targetID = req.params.userid;
+    const userID = req.user.id;
+
+    const response = await isModerator(userID);
+    if (response.is_moderator === 2) {
+      await db.run(
+        `DELETE
+        FROM users
+        WHERE id = ?`,
+        [targetID],
+      );
+      res.json({ success: true });
+    } else {
+      res.status(403).json({ error: "Недостаточно прав" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Проверка на сущестование игры по названию
+app.get("/api/does-game-exist/:game_name", async (req, res) => {
+  try {
+    const gameName = req.params.game_name;
+    if (gameName) {
+      const response = await db.get(
+        `
+      SELECT
+      *
+      FROM games
+      WHERE title = ?
+      `,
+        [gameName],
+      );
+      if (response) {
+        res.json({ success: true });
+      } else {
+        res.json({ success: false });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Запуск сервера
 app.listen(port, () => {

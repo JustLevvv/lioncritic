@@ -12,6 +12,18 @@
   user-select: none;
 }
 
+.profile_unclickable {
+  background-color: #222;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  right: 20px;
+  height: 90px;
+  width: 200px;
+  padding: 0;
+}
+
+
 .profile {
   background-color: #222;
   position: absolute;
@@ -103,6 +115,7 @@ main {
   align-items: center;
   gap: 10px;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+  position: relative;
 }
 
 .panel {
@@ -414,9 +427,9 @@ button.profile_context_bar:focus {
 .moderator_tools {
   position: absolute;
   width: 7vw;
-  gap: 10px;
+  gap: 6px;
   margin: 10px;
-  margin-top: 16px;
+  margin-top: 48px;
   font-family: Roboto;
   font-size: 15px;
   display: flex;
@@ -426,7 +439,7 @@ button.profile_context_bar:focus {
 
 .superadmin_tools {
   width: 7vw;
-  gap: 10px;
+  gap: 6px;
   font-family: Roboto;
   font-size: 15px;
   display: flex;
@@ -466,27 +479,110 @@ button.profile_context_bar:focus {
   font-size: 15px;
   cursor: pointer;
   color: #aaa;
+
+  opacity: 0;
+  animation: appear 0.4s ease forwards;
+}
+
+.menu {
+  position: absolute;
+  margin-top:36px;
+}
+
+
+.menu_button {
+  position: absolute;
+  width: 7vw;
+  margin: 10px;
+  margin-bottom: 0;
+}
+
+.go_up_button {
+  position: absolute;
+  z-index: 3;
+  padding: 13px;
+  margin-left: 79vw;
+  bottom: 2vh;
+  border-radius: 40px;
+  cursor:pointer;
+  border-color: #222;
+  border-width: 2px;
+  border-style: solid;
+  background-color: #333;
+  color: #aaa;
+  font-size: 25px;
+
+  animation: opacity 0.4s ease forwards;
 }
 
 .user_manager_button {
   height: 50px;
 }
 
-.add_game_button:hover, .back_button:hover, .user_manager_button:hover {
+.add_game_button:hover, .back_button:hover, .user_manager_button:hover, .go_up_button:hover {
   background-color: #444;
 }
 
-.add_game_button:active, .back_button:active, .user_manager_button:active {
+.add_game_button:active, .back_button:active, .user_manager_button:active, .go_up_button:active {
   background-color: #555;
 }
 
 .you_mod {
   margin: auto;
+  margin-top: 6px;
   color: #cfc;
+  
+  opacity: 0;
+  animation: appear 0.4s ease forwards;
 }
 
 .display_none {
   display: none;
+}
+
+.suggestion {
+  display: flex;
+  flex-direction: column  ;
+  margin: 14vh 30vw;
+  gap: 20px;
+}
+
+.suggestion_text {
+  position: relative;
+  margin: auto;
+  font-family: Roboto;
+  color: #fff;
+  font-size: 30px;
+  margin-bottom: 2px;
+  bottom: 1px;
+  user-select: none;
+  text-align: center;
+}
+
+.suggestion_button {
+  width: 60%;
+  height: 60px;
+  margin: auto; 
+  background: linear-gradient(135deg, #222, #444, #222);
+  border-radius: 14px;
+  color: #ddd;
+  font-family: Roboto;
+  font-size: 24px;
+  border-style: solid;
+  border-color: #222;
+  border-width: 3px;
+  user-select: none;
+}
+
+.suggestion_button:hover {
+  background: linear-gradient(135deg, #333, #444, #333);
+  border-color: #555;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+}
+.suggestion_button:active {
+  background: linear-gradient(180deg, #aaa, #999);
+  border-color: #bbb;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
 }
 
 /* - Анимации - */
@@ -514,49 +610,28 @@ button.profile_context_bar:focus {
   animation-delay: 0.5s;
 }
 
-.suggestion {
-  display: flex;
-  flex-direction: column  ;
-  margin: 20vh 30vw;
-  gap: 20px;
+#menu_1 {
+  animation-delay: 0.1s;
 }
 
-.suggestion_text {
-  position: relative;
-  margin: auto;
-  font-family: Roboto;
-  color: #fff;
-  font-size: 30px;
-  margin-bottom: 2px;
-  bottom: 1px;
-  user-select: none;
+#menu_2 {
+  animation-delay: 0.2s;
 }
 
-.suggestion_button {
-  width: 60%;
-  height: 60px;
-  margin: auto; 
-  background: linear-gradient(135deg, #222, #444, #222);
-  border-radius: 14px;
-  color: #ddd;
-  font-family: Roboto;
-  font-size: 24px;
-  border-style: solid;
-  border-color: #222;
-  border-width: 3px;
-  user-select: none;
+#menu_3 {
+  animation-delay: 0.3s;
 }
 
-
-.suggestion_button:hover {
-  background: linear-gradient(135deg, #333, #444, #333);
-  border-color: #555;
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+#menu_4 {
+  animation-delay: 0.4s;
 }
-.suggestion_button:active {
-  background: linear-gradient(180deg, #aaa, #999);
-  border-color: #bbb;
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+
+#menu_5 {
+  animation-delay: 0.5s;
+}
+
+#menu_6 {
+  animation-delay: 0.6s;
 }
 
 @keyframes appear {

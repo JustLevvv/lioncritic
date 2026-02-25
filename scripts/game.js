@@ -7,6 +7,22 @@ const chosenRate = {
   sound: null,
 };
 
+const genres = {
+  action: "Action",
+  rpg: "RPG",
+  adventure: "Adventure",
+  platformer: "Platformer",
+  strategy: "Strategy",
+  simulation: "Simulation",
+  puzzle: "Puzzle",
+  survival: "Survival",
+  horror: "Horror",
+  sports: "Sports",
+  mmo: "MMO",
+  sandbox: "Sandbox",
+  casual: "Casual",
+};
+
 let areStarsUpdated = 0;
 
 // Проверка входа
@@ -72,7 +88,7 @@ async function showGameFull(gameID) {
   if (description)
     document.getElementById("description").textContent = description;
   if (developer) document.getElementById("dev").textContent = developer;
-  if (genre) document.getElementById("genre").textContent = genre;
+  if (genre) document.getElementById("genre").textContent = genres[genre];
   if (date) document.getElementById("date").textContent = date;
 
   // Звёзды общие
@@ -240,8 +256,9 @@ async function sendRate() {
     credentials: "include",
     body: JSON.stringify(chosenRate),
   });
-
-  location.reload();
+  showNotification("Оценка установлена", function (ok) {
+    location.reload();
+  });
 }
 
 // Отмена изменения рейтинга
@@ -278,6 +295,8 @@ async function cancelRate() {
     }
   }
   document.getElementById("rate_buttons").classList.add("display_none");
+
+  showNotification("Оценка отменена", function (ok) {});
 }
 
 //Удаление игры
@@ -287,12 +306,19 @@ async function deleteGame() {
     credentials: "include",
   });
   if (response.ok) {
-    console.log("sss");
     document.getElementById("suggestion").classList.add("display_none");
     document
       .getElementById("suggestion_response")
       .classList.remove("display_none");
-  } else console.log("Ошибка удаления игры");
+    showNotification(
+      "Игра удалена",
+      function (ok) {
+        location.href = "index.html";
+      },
+      true,
+    );
+  } else
+    showNotification("Ошибка удаления игры", function (ok) {}, false, "error");
 }
 
 // Редактирование игры
@@ -339,6 +365,21 @@ async function editGame() {
   developerInput.classList.remove("display_none");
   genreInput.classList.remove("display_none");
   dateInput.classList.remove("display_none");
+  document.getElementById("image_input").classList.remove("display_none");
+  document
+    .getElementById("delete_image_button")
+    .classList.remove("display_none");
+}
+
+// Удаление изображения
+async function deleteImage() {
+  const gameID = window.location.search.substring(1);
+  const response = await fetch(`/api/delete-image/${gameID}`, {
+    credentials: "include",
+  });
+  const preview = document.getElementById("info_image");
+  preview.innerHTML = ``;
+  document.getElementById("image_input").value = "";
 }
 
 // Подтверждение редактирования игры
@@ -367,12 +408,22 @@ async function editGameConfirm() {
         credentials: "include",
         body: JSON.stringify(editDetails),
       });
+
+      if (response.ok) {
+        const imageFormData = new FormData();
+        const imageFile = document.getElementById("image_input").files[0];
+        imageFormData.append("image", imageFile);
+        console.log(imageFile);
+        const imageResponse = await fetch(`/api/send-image/${gameID}`, {
+          method: "POST",
+          body: imageFormData,
+          credentials: "include",
+        });
+      }
     }
   }
+
   location.reload();
-  // editButton.textContent = "Редактировать";
-  // editButton.onclick = editGame;
-  // document.getElementById("edit_cancel_button").classList.add("display_none");
 }
 
 // Вычисление цвета оценки
@@ -398,8 +449,60 @@ function colorRating(rating) {
   return `rgba(${r}, ${g}, ${b}, 0.8)`;
 }
 
+// Уведомление
+async function showNotification(message, action, block = false, type = "info") {
+  const element = document.getElementById("notification");
+  if (type === "error") {
+    element.style.backgroundColor = `#d88`;
+    console.log("color change");
+  } else {
+    element.style.backgroundColor = `#8d8`;
+  }
+  if (block) {
+    document.getElementById("block").classList.remove("display_none");
+  }
+  element.classList.remove("display_none");
+  document.getElementById("notification_text").textContent = message;
+
+  function onEnter(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      action(true);
+      element.classList.add("display_none");
+      document.getElementById("block").classList.add("display_none");
+      document.removeEventListener("keydown", onEnter);
+    }
+  }
+
+  document.addEventListener("keydown", onEnter);
+
+  document.getElementById("notification_button").addEventListener(
+    "click",
+    function () {
+      action(true);
+      element.classList.add("display_none");
+      document.getElementById("block").classList.add("display_none");
+    },
+    { once: true },
+  );
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const gameID = window.location.search.substring(1);
   showGameFull(gameID);
   checkLogging();
+
+  document
+    .getElementById("image_input")
+    .addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const preview = document.getElementById("info_image");
+          preview.innerHTML = `<img src="${event.target.result}" width="330" height="480">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 });

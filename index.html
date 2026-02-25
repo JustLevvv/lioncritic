@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=0.8">
   <link rel="stylesheet" href="styles/index.css">
   <link rel="stylesheet" href="styles/circles.css">
   <title>Lioncritic</title>
@@ -34,18 +34,22 @@
       
     </div>
   </header>
-  <main class="main">
+  <main class="main" id="main">
     <div id="search_advice" class="search_advice display_none">
       <p class="search_advice_text">Используйте ключи через пробел:</p>
       <p class="search_advice_text">dev: genre: date:гггг-мм-дд unrated:1/0 order:gameplay/graphics/story/sound/date</p>
     </div>
-    <div class="moderator_tools display_none" id="moderator_tools">
-      <p class="you_mod">Вы модератор</p>
-      <button class="add_game_button" onclick="location.href='addGame.html'">Добавить игру</button>
-      <button class="add_game_button">Удалить игры</button>
-      <div class="superadmin_tools display_none" id="superadmin_tools">
-        <p class="you_mod">Вы суперадмин</p>
-        <button class="user_manager_button" onclick="location.href='userManager.html'">Менеджер пользователей</button>
+    <button class="add_game_button menu_button" id="menu_button" onclick="menu()">Меню ◀</button>
+    <div class="menu display_none" id="menu">
+      <button class="add_game_button menu_button" id="menu_1" onclick="location.href='stats.html'">Статистика</button>
+      <div class="moderator_tools display_none" id="moderator_tools">
+        <p class="you_mod" id="menu_2">Вы модератор</p>
+        <button class="add_game_button" id="menu_3" onclick="location.href='addGame.html'">Добавить игру</button>
+        <button class="add_game_button" id="menu_4">Удалить игры</button>
+        <div class="superadmin_tools display_none" id="superadmin_tools">
+          <p class="you_mod" id="menu_5">Вы суперадмин</p>
+          <button class="user_manager_button" id="menu_6" onclick="location.href='userManager.html'">Менеджер пользователей</button>
+        </div>
       </div>
     </div>
     <div class="guest_context_box display_none" id="guest_context_box">
@@ -66,10 +70,9 @@
       <button onclick="location.href='profile.html'" class="profile_context_bar">Профиль</button>
       <button onclick="logout()" class="profile_context_bar">Выйти из аккаунта</button>
     </div>
-    
     <div class="games_grid" id="games_grid">
-      
     </div>
+    <button class="go_up_button display_none" id="go_up_button" onclick="goUp()">▲</button>
   </main>
   <div class="notification display_none" id="notification">
     <p id="notification_text">Уведомление!</p>

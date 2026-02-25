@@ -1,0 +1,149 @@
+.profile_main {
+  background: linear-gradient(180deg, rgba(221, 221, 221, 0.7), rgba(187, 187, 187, 0.5));
+  margin: 15vh auto;
+  padding: 20px;
+  width: 40vw;
+  height: 60vh;
+  border-radius: 40px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  &::selection {
+    color: #ddd;
+    background-color: #444;
+  }
+}
+
+.profile_main_header {
+  font-family: Roboto;
+  font-size: 26px;
+  margin: 0;
+  user-select: none;
+}
+
+.profile_main_text {
+  font-family: Roboto;
+  font-size: 22px;
+  margin: 0 0;
+  font-weight: bold;
+}
+
+.profile_div {
+  display: flex;
+  flex-direction: row;
+  height: 25px;
+  margin: 1px 0;
+  align-items:baseline;
+}
+
+.profile_main_title {
+  font-family: Roboto;
+  font-size: 16px;
+  margin: 0 5px 0 0;
+  user-select: none;
+}
+
+#username {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.profile_main_id {
+  font-family: Roboto;
+  font-size: 14px;
+  margin: 0;
+  margin-bottom: 5px;
+  color:#555;
+}
+
+.context_buttons {
+  position: absolute;
+  margin: 0;
+  margin-top: 10.7vh;
+  margin-left: 35vw;
+  display: flex;
+  gap: 10px;
+}
+
+.context_button {
+  height: 32px;
+  border-color: #222;
+  border-width: 2px;
+  border-style: solid;
+  background-color: #333;
+  padding: 0 6px;
+  font-family: Roboto;
+  font-size: 16px;
+  cursor: pointer;
+  color: #aaa;
+  user-select: none;
+}
+
+
+.context_button:hover {
+  background-color: #444;
+}
+
+.context_button:active {
+  background-color: #555;
+}
+
+.standard_input {
+  background-color: #bbb;
+  border-radius: 4px;
+  font-family: Roboto;
+  font-size: 18px;
+  padding-left: 5px;
+  border-style: solid;
+  border-color: #999;
+  border-width: 3px;
+  width: 30%;
+}
+
+.confirm_input {
+  margin: auto;
+  background-color: #bbb;
+  border-radius: 8px;
+  font-family: Roboto;
+  font-size: 24px;
+  padding: 10px;
+  border-style: solid;
+  border-color: #999;
+  border-width: 3px;
+  width: 50%;
+}
+
+.last_rates {
+  width:90%;
+  height: 30vh;
+  margin: auto;
+  background-color: rgba(221, 221, 221, 0.2);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.last_rate {
+  background-color: rgba(221, 221, 221, 0.2);
+  width: 175px;
+  height: 250px;
+  margin: auto;
+  border-radius: 10px;
+}
+
+.last_rates_text {
+  margin-left:50px;
+  margin-top:50px;
+  font-size:20px;
+  user-select: none;
+}
+
+.edit_context_div {
+  display: flex;
+  flex-direction: column;
+}
+
+#edit_cancel_button {
+  position: relative;
+  bottom: 68px;
+}

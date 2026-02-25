@@ -3,9 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/circles.css">
+  <link rel="stylesheet" href="styles/index.css">
+  <link rel="stylesheet" href="styles/profile.css">
   <title>Lioncritic - Профиль пользователя</title>
+  <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
 </head>
 <body>
-  
+  <div class="background">
+    <ul class="circles">
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+    </ul>
+  </div>
+  <main>
+    <body>
+      <div class="block display_none" id="block"></div>
+      <div class="context_buttons">
+        <button class="context_button" onclick="location.href='index.html'">Вернуться</button>
+        <div class="edit_context_div">
+          <button class="context_button" id="edit_button" onclick="editProfile()">Редактировать</button>
+          <button class="context_button display_none" id="edit_cancel_button" onclick="location.reload()">Отменить редактирование</button>
+        </div>
+        <button class="context_button" onclick="document.getElementById('block_password').classList.remove('display_none')">Сменить пароль</button>
+        <button class="context_button" onclick="document.getElementById('block_delete').classList.remove('display_none')">Удалить аккаунт</button>
+      </div>
+      
+      <div class="block display_none" id="block_delete">
+        <div id="suggestion">
+          <div class="suggestion">
+            <p class="suggestion_text">Вы уверены, что хотите удалить аккаунт?</p>
+            <p class="suggestion_text">Введите логин и пароль, чтобы подтвердить</p>
+            <input type="text" id="s_username_input" class="confirm_input" spellcheck="false" placeholder="Логин">
+            <input type="password" id="s_password_input" class="confirm_input" spellcheck="false" placeholder="Пароль">
+            <button class="suggestion_button" onclick="deleteProfile()">✔ - Удалить</button>
+            <button class="suggestion_button" onclick="location.reload()">✖ - Отмена</button>
+          </div>
+        </div>
+      </div>
+      <div class="block display_none" id="block_password">
+        <div id="suggestion">
+          <div class="suggestion">
+            <p class="suggestion_text">Для смены пароля введите логин, пароль и новый пароль</p>
+            <input type="text" id="s_c_username_input" class="confirm_input" spellcheck="false" placeholder="Логин">
+            <input type="password" id="s_c_password_input" class="confirm_input" spellcheck="false" placeholder="Пароль">
+            <input type="password" id="s_c_password_new_input"_input class="confirm_input" spellcheck="false" placeholder="Новый пароль">
+            <input type="password" id="s_c_password_new_2_input" class="confirm_input" spellcheck="false" placeholder="Подтверждение нового пароля">
+            <button class="suggestion_button" onclick="changePassword()">✔ - Подтвердить</button>
+            <button class="suggestion_button" onclick="location.reload()">✖ - Отмена</button>
+          </div>
+        </div>
+        <div id="suggestion_response" class="display_none">
+          <div class="suggestion">
+            <p class="suggestion_text">Вы удалили эту игру</p>
+            <button class="suggestion_button" onclick="location.href='index.html'">🏠︎ - Назад</button>
+          </div>
+        </div>
+      </div>
+    
+      <div class="profile_main">
+        <p class="profile_main_header">Профиль</p>
+        <div class="profile_picture"></div>
+        <p class="profile_main_text" id="username">...</p>
+        <input type="text" id="username_input" class="standard_input display_none" spellcheck="false">
+        <p class="profile_main_id" id="id">id:0</p>
+        <div class="profile_div" id="email_div">
+          <p class="profile_main_title" id="email_t">Email:</p>
+          <p class="profile_main_text" id="email">...</p>
+        </div>
+        <input type="text" id="email_input" class="standard_input display_none" spellcheck="false">
+        <div class="profile_div" id="date_div">
+          <p class="profile_main_title" id="date_t">Аккаунт создан:</p>
+          <p class="profile_main_text" id="creation_date">yyyy-MM-dd</p>
+        </div>
+        <div class="profile_div" id="rates_div">
+          <p class="profile_main_title" id="rates_t">Общее количество оценок:</p>
+          <p class="profile_main_text" id="rates_quantity">0 ★</p>
+        </div>
+        <p class="last_rates_text">Ваши последние оценки:</p>
+        <div class="last_rates">
+          <div class="last_rate" id="panel_1"></div> <!--165x240px img-->
+          <div class="last_rate" id="panel_2"></div>
+          <div class="last_rate" id="panel_3"></div>
+        </div>
+      </div>
+    </body>
+  </main>
+  <header class="hat">
+    <div class="icon">
+      <a href="/index.html" class="home_link">
+        <img class="icon_image" src="favicon/android-chrome-192x192.png" width="64" height="64">
+        <h1 class="title">ioncritic</h1>
+      </a>
+    </div>
+    <div class="profile_unclickable">
+      <p id="profile_text" class="profile_text">Гость</p>
+      <p id="profile_number" class="profile_text"></p>
+      
+    </div>
+  </header>
+  <div class="notification display_none" id="notification">
+    <p id="notification_text">Уведомление!</p>
+    <button id="notification_button" class="notification_button">OK</button>
+  </div>
+
+  <script src="scripts/profile.js"></script>
 </body>
 </html>

@@ -36,7 +36,7 @@ document
     }
   });
 
-// Форма создания игры
+// Отправка создания игры
 async function createGame() {
   const response = await fetch("/api/create-game", {
     method: "POST",
@@ -68,10 +68,36 @@ async function createGame() {
   document.getElementById("block").classList.remove("display_none");
 }
 
+async function doesGameExist(title) {
+  const response = await fetch(`/api/does-game-exist/${title}`);
+  if (response.ok) {
+    const data = await response.json();
+    if (data.success === true) return true;
+    else {
+      console.log("weaew");
+      return false;
+    }
+  } else return false;
+}
+
 function hrefGame() {
   location.href = `game.html?${createdGameID}`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  document
+    .getElementById("title_input")
+    .addEventListener("input", async (e) => {
+      if (await doesGameExist(e.target.value)) {
+        document
+          .getElementById("title_input_warning")
+          .classList.remove("display_none");
+      } else {
+        document
+          .getElementById("title_input_warning")
+          .classList.add("display_none");
+      }
+    });
+
   checkLogging();
 });

@@ -45,7 +45,10 @@
       <div class="main_info">
         <div class="main_info_text">
           <p class="input_title">Название</p>
-          <input type="text" id="title_input" class="standard_input" spellcheck="false">
+          <div class="title_input_div">
+            <input type="text" id="title_input" class="standard_input" spellcheck="false">
+            <p class="title_input_warning display_none" id="title_input_warning">Игра с таким названием уже существует!</p>
+          </div>
           <p class="input_title">Разработчики</p>
           <input type="text" id="dev_input" class="standard_input" spellcheck="false">
           <p class="input_title">Жанр</p>
@@ -62,6 +65,7 @@
             <option value="sports">Sports</option>
             <option value="mmo">MMO</option>
             <option value="sandbox">Sandbox</option>
+            <option value="casual">Casual</option>
           </select>
           <p class="input_title">Дата релиза (раннего доступа)</p>
           <input type="date" id="date_input" spellcheck="false">
